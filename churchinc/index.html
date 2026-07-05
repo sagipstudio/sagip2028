@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fil">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHURCH, INC. — Salvation Sold Separately</title>
+<title>CHURCH INCORPORATED — Kaligtasan, Ibinebenta nang Hiwalay</title>
 <style>
   :root{
     --bg:#151009; --panel:#1f1810; --paper:#f2ead8; --ink:#241d12;
@@ -12,315 +12,414 @@
   *{box-sizing:border-box; margin:0; padding:0;}
   body{background:var(--bg); color:var(--paper); font-family:Georgia,'Times New Roman',serif;
        min-height:100vh; display:flex; flex-direction:column; align-items:center;}
-  #app{width:100%; max-width:520px; padding:14px; display:flex; flex-direction:column; min-height:100vh;}
-  header{ text-align:center; padding:10px 0 6px; border-bottom:1px solid var(--gold-dim); }
-  header h1{ font-size:1.35rem; letter-spacing:.18em; color:var(--gold); font-weight:normal;}
-  header .sub{ font-size:.72rem; color:var(--muted); letter-spacing:.28em; text-transform:uppercase; margin-top:2px;}
+  #app{width:100%; max-width:600px; padding:14px; display:flex; flex-direction:column; min-height:100vh;}
+  header{ text-align:center; padding:10px 0 6px; border-bottom:1px solid var(--gold-dim); position:relative;}
+  header h1{ font-size:1.3rem; letter-spacing:.14em; color:var(--gold); font-weight:normal;}
+  header .sub{ font-size:.74rem; color:var(--muted); letter-spacing:.24em; text-transform:uppercase; margin-top:2px;}
+  #langbtn{ position:absolute; right:0; top:8px; background:transparent; color:var(--muted);
+     border:1px solid var(--gold-dim); border-radius:5px; padding:4px 10px; font-size:.78rem; cursor:pointer; font-family:inherit;}
   #meters{ display:flex; gap:10px; justify-content:space-between; padding:12px 2px 4px;}
   .meter{ flex:1; text-align:center;}
-  .meter .label{ font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:4px;}
-  .bar{ height:9px; background:#0c0906; border:1px solid var(--gold-dim); border-radius:5px; overflow:hidden;}
+  .meter .label{ font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:4px;}
+  .bar{ height:10px; background:#0c0906; border:1px solid var(--gold-dim); border-radius:5px; overflow:hidden;}
   .bar i{ display:block; height:100%; background:var(--gold); transition:width .45s ease;}
   .bar.warn i{ background:var(--red);}
-  #status{ display:flex; justify-content:space-between; font-size:.72rem; color:var(--muted);
-           padding:6px 2px 0; letter-spacing:.06em;}
+  #status{ display:flex; justify-content:space-between; font-size:.8rem; color:var(--muted);
+           padding:6px 2px 0; letter-spacing:.05em;}
   #cardZone{ flex:1; display:flex; align-items:center; justify-content:center; padding:16px 0;}
   .card{ background:var(--paper); color:var(--ink); border-radius:8px; padding:22px 20px 18px;
          width:100%; box-shadow:0 8px 30px rgba(0,0,0,.55), inset 0 0 0 1px #d8ccb2;
          animation:deal .35s ease;}
   @keyframes deal{ from{transform:translateY(14px); opacity:0;} to{transform:none; opacity:1;} }
-  .card .tag{ font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:#7a6a45; margin-bottom:10px;}
-  .card .verse{ font-style:italic; color:#5a4a28; border-left:3px solid var(--gold); padding-left:10px; margin:0 0 12px; font-size:.9rem;}
-  .card p.body{ font-size:1.0rem; line-height:1.5;}
+  .card .tag{ font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:#7a6a45; margin-bottom:10px;}
+  .card .verse{ font-style:italic; color:#5a4a28; border-left:3px solid var(--gold); padding-left:10px; margin:0 0 12px; font-size:.98rem;}
+  .card p.body{ font-size:1.06rem; line-height:1.55;}
   #choices{ display:flex; gap:10px; padding-bottom:8px;}
   #choices button{ flex:1; background:var(--panel); color:var(--paper); border:1px solid var(--gold-dim);
-     border-radius:6px; padding:13px 10px; font-family:inherit; font-size:.86rem; line-height:1.3;
+     border-radius:6px; padding:14px 11px; font-family:inherit; font-size:.95rem; line-height:1.35;
      cursor:pointer; transition:background .15s, border-color .15s;}
   #choices button:hover{ background:#2b2114; border-color:var(--gold);}
-  footer{ text-align:center; font-size:.62rem; color:#6d6250; padding:8px 0 4px; letter-spacing:.08em;}
-  /* screens */
+  footer{ text-align:center; font-size:.72rem; color:#6d6250; padding:8px 0 4px; letter-spacing:.06em;}
   .screen{ flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding:20px 6px; animation:deal .4s ease;}
-  .screen h2{ color:var(--gold); font-weight:normal; letter-spacing:.14em; font-size:1.5rem; margin-bottom:14px;}
-  .screen p{ color:var(--paper); line-height:1.6; font-size:.95rem; margin-bottom:12px;}
-  .screen .fine{ color:var(--muted); font-size:.78rem; line-height:1.55;}
+  .screen h2{ color:var(--gold); font-weight:normal; letter-spacing:.12em; font-size:1.6rem; margin-bottom:14px;}
+  .screen p{ color:var(--paper); line-height:1.6; font-size:1.02rem; margin-bottom:12px;}
+  .screen .fine{ color:var(--muted); font-size:.86rem; line-height:1.55;}
   .screen button{ margin:16px auto 0; background:var(--gold); color:#1c1608; border:none; border-radius:6px;
-     padding:13px 26px; font-family:inherit; font-size:.95rem; letter-spacing:.08em; cursor:pointer;}
-  .screen button.ghost{ background:transparent; color:var(--gold); border:1px solid var(--gold-dim); }
-  #receipts{ text-align:left; max-height:46vh; overflow-y:auto; background:var(--panel); border:1px solid var(--gold-dim);
+     padding:14px 28px; font-family:inherit; font-size:1.02rem; letter-spacing:.06em; cursor:pointer;}
+  .screen button.ghost{ background:transparent; color:var(--gold); border:1px solid var(--gold-dim);}
+  #receipts{ text-align:left; max-height:44vh; overflow-y:auto; background:var(--panel); border:1px solid var(--gold-dim);
      border-radius:6px; padding:14px; margin-top:14px;}
-  #receipts h3{ color:var(--gold); font-size:.8rem; letter-spacing:.2em; text-transform:uppercase; margin-bottom:8px;}
-  #receipts li{ font-size:.78rem; color:var(--paper); line-height:1.5; margin:0 0 10px 16px;}
+  #receipts h3{ color:var(--gold); font-size:.86rem; letter-spacing:.18em; text-transform:uppercase; margin-bottom:8px;}
+  #receipts li{ font-size:.88rem; color:var(--paper); line-height:1.5; margin:0 0 10px 16px;}
   #receipts li b{ color:var(--gold);}
-  #receipts li span{ color:var(--muted); font-style:italic;}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
 "use strict";
-/* CHURCH, INC. — prototype v0.1 — The Shepherd campaign, Era I–III compressed.
-   Every dark mechanic below is documented. See RESEARCH.md. */
+/* CHURCH INCORPORATED — v0.2 bilingual (Tagalog/English)
+   The Shepherd campaign. Every dark mechanic is documented — see RESEARCH.md.
+   Tagalog scripture: Ang Dating Biblia (1905, public domain). */
 
-const S = { v:50, b:50, d:65, conscience:0, reckon:0, year:1926, followers:9, flags:{}, receipts:new Set(), over:false };
+let LANG="tl";
+const T=o=>typeof o==="string"?o:o[LANG];
+const S={ v:50, b:50, d:65, conscience:0, reckon:0, year:1926, followers:9, flags:{}, receipts:new Set(), over:false };
+const clamp=x=>Math.max(0,Math.min(100,x));
 
-const clamp = (x)=>Math.max(0,Math.min(100,x));
-
-/* receipts: the Codex teaser. key -> [label, citation] */
-const CODEX = {
-  tithe:      ["Seed Faith doctrine","Prosperity 'seed faith' tithing is a documented staple of high-control churches; Malachi 3:10 read as a transaction. The medicine-money letters are real."],
-  anointed:   ["'Touch Not Mine Anointed'","Psalm 105:15, decontextualized to criminalize criticism of leadership — standard high-control proof-text."],
-  blocvote:   ["Bloc voting","'Vote as One': one Philippine church has delivered a command vote since before WWII; 7 endorsed presidential winners since 1969. Peer-reviewed effect: Ravanilla, CPS 2025."],
-  purge:      ["The Purge","2015: a church expelled the leader's own brother and mother after a YouTube plea that their lives were in danger."],
-  occupy:     ["The Occupation","2015: thousands occupied EDSA until the DOJ backed off an illegal-detention probe. Re-run July 2026 for a plunder-charged senator."],
-  ghostproj:  ["Ghost projects","₱42–118 billion/year lost to flood-control corruption (2023–25). Real ghost projects: 0% built, 100% disbursed."],
-  deacon:     ["The Placement Web","Documented lobbying of members into the judiciary, Comelec, and Customs — plus cultivation of useful outsiders."],
-  rolls:      ["The Rolls Lie","Ex-members describe quiet exits en masse; official rolls never shrink. The autocrat's data problem is well documented."],
-  leavers:    ["Exit enables voice","Ex-members who fled abroad won refugee status in Canada — official findings that fear of persecution was credible."],
-  cbc:        ["The Foreign Correspondent","CBC's 'Church of Secrets' (2018): spotlights aimed at cameras, slashed tires — all of it became the broadcast. The church's lawsuit was dismissed; it paid CBC's costs."],
-  record:     ["The Record Machine","Guinness records: largest gospel choir (21,262), most baptized (18,272), largest fireworks display ever (810,904). Zero headlines said 'cult'."],
-  ghosttown:  ["Buy a Ghost Town","Scenic, South Dakota — bought by a church for ~$700,000 in 2011. No explanation was ever offered."],
-  strongman:  ["The Strongman","Troops stormed the church compound on martial law's first night (1972). The church endorsed the dictator anyway in 1986 — and his son in 2022."],
-  thelist:    ["The List","A cash-reward-per-kill police system was confirmed under oath (Quad Committee, 2024). Death toll: 6,000–30,000. The ICC trial opened with charges confirmed, April 2026."],
-  hearing:    ["The Hearing","Documented counterattacks on a Senate investigator: recantation videos, a mirror-charge accusing HER of kidnapping, and four senators objecting to a fugitive's contempt citation."],
-  mirror:     ["The Mirror-Charge","The cult accused the investigator of kidnapping — the cult's own documented crime. Every accusation you file is autobiography."],
-  senator:    ["Our Man in the Senate","July 2026: a church-backed senator charged with plunder (₱75M); the church rallied in the streets for days as the case was filed."],
-  patron:     ["The Patron State","Meta takedown of a CCP-linked network boosting one political camp (2020); embassy 'keyboard warriors' contract, ₱930,000 (2023); NSC interference finding (2025)."],
-  dash:       ["The Dash Counter","Nine dashes became ten on the 2023 map. Rammings, lasers, water cannons, a 352m barrier. Nobody official ever mentions the new dash."],
-  jailrun:    ["The Jail Campaign","2025: a cult leader ran for the Senate from jail — and an ex-mutineer once won a Senate seat FROM a cell. The electorate can smell the difference."],
-  widow:      ["The Widow's Envelope","Tithes of medicine money are documented in survivor testimony across prosperity churches worldwide."],
-  reformer:   ["The Reformer","To make a country hate the author of its Mental Health Act, you must first make it forget the law. Documented playbook: smear, mirror-charge, remove, outlast."]
+const CODEX={
+ tithe:{tl:["Doktrina ng 'Seed Faith'","Ang ikapu bilang 'investment na dapat bayaran ng Diyos' ay dokumentadong taktika ng mga high-control na simbahan. Totoo ang mga sulat ng biyudang nag-abuloy ng pera panggamot."],
+        en:["Seed Faith doctrine","Prosperity 'seed faith' tithing is a documented staple of high-control churches; Malachi 3:10 read as a transaction. The medicine-money letters are real."]},
+ anointed:{tl:["'Huwag Ninyong Galawin ang Mga Pinahiran Ko'","Awit 105:15, hinugot sa konteksto para gawing kasalanan ang pagpuna sa lider — klasikong proof-text ng mga high-control na grupo."],
+        en:["'Touch Not Mine Anointed'","Psalm 105:15, decontextualized to criminalize criticism of leadership — standard high-control proof-text."]},
+ blocvote:{tl:["Bloc Voting","'Vote as One': may simbahan sa Pilipinas na nagdidikta ng boto mula pa bago ang WWII; 7 endorsed na kandidato sa pagkapangulo ang nanalo mula 1969. Sinukat ng peer-reviewed study (Ravanilla 2025) ang epekto."],
+        en:["Bloc voting","'Vote as One': one Philippine church has delivered a command vote since before WWII; 7 endorsed presidential winners since 1969. Peer-reviewed effect: Ravanilla, CPS 2025."]},
+ purge:{tl:["Ang Tiwalag","2015: may simbahang nag-expel sa sariling kapatid at ina ng lider — matapos ang YouTube video na nagsasabing nanganganib ang buhay nila."],
+        en:["The Purge","2015: a church expelled the leader's own brother and mother after a YouTube plea that their lives were in danger."]},
+ occupy:{tl:["Ang Okupasyon","2015: libu-libong miyembro ang nag-occupy sa EDSA hanggang umatras ang DOJ sa isang illegal-detention complaint. Inulit noong Hulyo 2026 — para naman sa isang senador na kinasuhan ng plunder."],
+        en:["The Occupation","2015: thousands occupied EDSA until the DOJ backed off an illegal-detention probe. Re-run July 2026 for a plunder-charged senator."]},
+ ghostproj:{tl:["Mga Proyektong Multo","₱42–118 BILYON kada taon ang nawawala sa flood control (2023–25). Totoong ghost project: 0% built, 100% disbursed."],
+        en:["Ghost projects","₱42–118 billion/year lost to flood-control corruption (2023–25). Real ghost projects: 0% built, 100% disbursed."]},
+ deacon:{tl:["Ang Placement Web","Dokumentado ang pag-lobby ng mga miyembro papasok sa hudikatura, Comelec, at Customs — pati ang pag-alaga sa mga 'pwedeng makatulong balang araw.'"],
+        en:["The Placement Web","Documented lobbying of members into the judiciary, Comelec, and Customs — plus cultivation of useful outsiders."]},
+ rolls:{tl:["Nagsisinungaling ang Listahan","Tahimik na umaalis ang mga miyembro; hindi lumiliit ang opisyal na bilang. Dokumentado ang 'autocrat's data problem' — niloloko ng makina pati ang sarili nitong lider."],
+        en:["The Rolls Lie","Ex-members describe quiet exits en masse; official rolls never shrink. The autocrat's data problem is well documented."]},
+ leavers:{tl:["Ang Paglabas ay Nagbibigay ng Boses","May mga dating miyembrong tumakas sa ibang bansa at BINIGYAN NG REFUGEE STATUS sa Canada — opisyal na pagpapatunay na kapani-paniwala ang takot nila."],
+        en:["Exit enables voice","Ex-members who fled abroad won refugee status in Canada — official findings that fear of persecution was credible."]},
+ cbc:{tl:["Ang Dayuhang Peryodista","CBC 'Church of Secrets' (2018): ilaw na itinutok sa kamera, gulong na sinaksak — lahat napunta sa broadcast. Ang demanda ng simbahan? Ibinasura, at pinagbayad pa sila ng gastos ng CBC."],
+        en:["The Foreign Correspondent","CBC's 'Church of Secrets' (2018): spotlights aimed at cameras, slashed tires — all became the broadcast. The church's lawsuit was dismissed; it paid CBC's costs."]},
+ record:{tl:["Ang Makina ng World Record","Guinness records: pinakamalaking gospel choir (21,262), pinakamaraming nabinyagan (18,272), pinakamalaking fireworks display sa kasaysayan (810,904). Zero headline ang nagsabi ng 'kulto.'"],
+        en:["The Record Machine","Guinness records: largest gospel choir (21,262), most baptized (18,272), largest fireworks display ever (810,904). Zero headlines said 'cult'."]},
+ ghosttown:{tl:["Bumili ng Ghost Town","Scenic, South Dakota — binili ng isang simbahan sa halagang ~$700,000 noong 2011. Walang paliwanag na ibinigay kailanman."],
+        en:["Buy a Ghost Town","Scenic, South Dakota — bought by a church for ~$700,000 in 2011. No explanation was ever offered."]},
+ strongman:{tl:["Ang Diktador","Sinalakay ng mga sundalo ang compound ng simbahan sa unang gabi ng Martial Law (1972). In-endorso pa rin ng simbahan ang diktador noong 1986 — at ang anak niya noong 2022."],
+        en:["The Strongman","Troops stormed the church compound on martial law's first night (1972). The church endorsed the dictator anyway in 1986 — and his son in 2022."]},
+ thelist:{tl:["Ang Listahan","May sinumpaang testimonya (Quad Committee, 2024): may cash reward kada patay. 6,000–30,000 ang namatay. Nagbukas na ang ICC trial, na-confirm ang kaso noong Abril 2026."],
+        en:["The List","A cash-reward-per-kill police system was confirmed under oath (Quad Committee, 2024). Death toll: 6,000–30,000. ICC charges confirmed, April 2026."]},
+ hearing:{tl:["Ang Pagdinig","Dokumentadong kontra-atake sa isang Senate investigator: recantation videos, kasong kidnapping laban SA KANYA, at apat na senador na tumutol sa contempt ng isang takas na cult leader."],
+        en:["The Hearing","Documented counterattacks on a Senate investigator: recantation videos, a mirror-charge accusing HER of kidnapping, and four senators objecting to a fugitive's contempt citation."]},
+ mirror:{tl:["Ang Mirror-Charge","Inakusahan ng kulto ang imbestigador ng kidnapping — ang mismong dokumentadong krimen ng kulto. Bawat akusasyon mo ay autobiography."],
+        en:["The Mirror-Charge","The cult accused the investigator of kidnapping — the cult's own documented crime. Every accusation you file is autobiography."]},
+ senator:{tl:["Ang Aming Tao sa Senado","Hulyo 2026: kinasuhan ng plunder (₱75M) ang isang senador na suportado ng simbahan; dalawang araw na rally habang isinasampa ang kaso."],
+        en:["Our Man in the Senate","July 2026: a church-backed senator charged with plunder (₱75M); the church rallied in the streets for days as the case was filed."]},
+ patron:{tl:["Ang Dayuhang Amo","Meta takedown ng CCP-linked network na nagbo-boost sa iisang kampo (2020); kontrata ng embahada sa 'keyboard warriors' — ₱930,000 (2023); NSC finding ng interference (2025)."],
+        en:["The Patron State","Meta takedown of a CCP-linked network boosting one political camp (2020); embassy 'keyboard warriors' contract, ₱930,000 (2023); NSC interference finding (2025)."]},
+ dash:{tl:["Ang Bilang ng Dash","Naging sampu ang siyam na dash sa mapa (2023). Ramming, water cannon, laser, 352-metrong harang. Walang opisyal na bumabanggit sa bagong dash."],
+        en:["The Dash Counter","Nine dashes became ten on the 2023 map. Rammings, lasers, water cannons, a 352m barrier. Nobody official ever mentions the new dash."]},
+ jailrun:{tl:["Ang Kandidato sa Selda","2025: may cult leader na tumakbo sa Senado mula sa kulungan — at may dating mutineer namang NANALO ng Senado mula sa selda. Naaamoy ng botante ang pagkakaiba."],
+        en:["The Jail Campaign","2025: a cult leader ran for Senate from jail — and an ex-mutineer once WON a Senate seat from a cell. The electorate can smell the difference."]},
+ widow:{tl:["Ang Sobre ng Biyuda","Ang pag-ikapu ng perang pambili ng gamot ay dokumentado sa mga testimonya ng mga nakaligtas sa prosperity churches sa buong mundo."],
+        en:["The Widow's Envelope","Tithes of medicine money are documented in survivor testimony across prosperity churches worldwide."]},
+ reformer:{tl:["Ang Repormista","Para kamuhian ng bayan ang may-akda ng Mental Health Act, kailangan mo munang ipalimot ang batas. Dokumentadong playbook: siraan, kasuhan ng sariling krimen, tanggalin, hintayin."],
+        en:["The Reformer","To make a country hate the author of its Mental Health Act, you must first make it forget the law. Documented playbook: smear, mirror-charge, remove, outlast."]}
 };
 
-/* deck ------------------------------------------------------------------ */
-/* effects: v,b,d = meters; c = conscience; r = reckoning; f = set flag; rec = receipt key */
-const DECK = [
-{tag:"THE CALLING", body:"A chapel. Eleven pews, nine parishioners, one leak in the roof. Your uncle says God told him you are in charge now. God, as usual, could not be reached for comment.",
- l:["Accept humbly",{v:+6,b:-2}], r:["Accept magnificently",{v:+3,b:+3,d:-2}]},
+/* deck: effects v,b,d meters; c conscience; r reckoning; f flag; rec receipt */
+const DECK=[
+{tag:{tl:"ANG TAWAG",en:"THE CALLING"},
+ body:{tl:"Isang kapilya. Labing-isang bangko, siyam na parokyano, isang butas sa bubong. Sabi ng tiyuhin mo, sinabi raw ng Diyos na ikaw na ang bahala. Ang Diyos, gaya ng dati, hindi ma-contact para sa komento.",
+       en:"A chapel. Eleven pews, nine parishioners, one leak in the roof. Your uncle says God told him you are in charge now. God, as usual, could not be reached for comment."},
+ l:[{tl:"Tanggapin nang mapagkumbaba",en:"Accept humbly"},{v:+6,b:-2}], r:[{tl:"Tanggapin nang marangya",en:"Accept magnificently"},{v:+3,b:+3,d:-2}]},
 
-{tag:"DOCTRINE — THE VERSE-O-MATIC™", verse:"“Bring ye all the tithes into the storehouse…” — Malachi 3:10",
- body:"Preached in context, it is about feeding the temple's poor. Preached as an investment vehicle, it is about feeding you. The Verse-o-matic™ suggests: 'Seed Faith: Now With Compound Interest.'",
- l:["Preach the context",{v:+2,b:-4,c:+1}], r:["Ship the product",{b:+9,r:+1,rec:"tithe",f:"prosperity"}]},
+{tag:{tl:"DOKTRINA — ANG VERSE-O-MATIC™",en:"DOCTRINE — THE VERSE-O-MATIC™"},
+ verse:{tl:"“Dalhin ninyo ang buong ikasangpung bahagi sa kamalig…” — Malakias 3:10",en:"“Bring ye all the tithes into the storehouse…” — Malachi 3:10"},
+ body:{tl:"Kapag ipinangaral nang buo, tungkol ito sa pagpapakain sa mahihirap. Kapag ipinangaral bilang investment, tungkol ito sa pagpapakain sa'yo. Mungkahi ng Verse-o-matic™: 'Seed Faith: May Compound Interest Na!'",
+       en:"Preached in context, it is about feeding the temple's poor. Preached as an investment vehicle, it is about feeding you. The Verse-o-matic™ suggests: 'Seed Faith: Now With Compound Interest.'"},
+ l:[{tl:"Ipangaral ang buong konteksto",en:"Preach the context"},{v:+2,b:-4,c:+1}], r:[{tl:"I-launch ang produkto",en:"Ship the product"},{b:+9,r:+1,rec:"tithe",f:"prosperity"}]},
 
-{tag:"CORRESPONDENCE", body:"A letter, in careful penmanship. A widow has tithed her blood-pressure medicine money and asks you to pray her pressure down instead. Your assistant has pre-drafted a warm form letter.",
- l:["Open it. Read it. All of it.",{c:+2,b:-2,rec:"widow"}], r:["The form letter is warm",{b:+3,r:+1}]},
+{tag:{tl:"SULAT",en:"CORRESPONDENCE"},
+ body:{tl:"Isang sulat, maingat ang sulat-kamay. Nag-ikapu ang isang biyuda ng pambili sana ng gamot sa altapresyon, at hinihiling na ipagdasal na lang na bumaba ang presyon niya. May naka-draft nang mainit na form letter ang assistant mo.",
+       en:"A letter, in careful penmanship. A widow has tithed her blood-pressure medicine money and asks you to pray her pressure down instead. Your assistant has pre-drafted a warm form letter."},
+ l:[{tl:"Buksan. Basahin. Lahat.",en:"Open it. Read it. All of it."},{c:+2,b:-2,rec:"widow"}], r:[{tl:"Mainit naman ang form letter",en:"The form letter is warm"},{b:+3,r:+1}]},
 
-{tag:"DOCTRINE", verse:"“Touch not mine anointed…” — Psalm 105:15",
- body:"A deacon suggests this verse settles this morning's budget questions. And all future budget questions. And questions generally.",
- l:["Questions are healthy",{v:-4,c:+1}], r:["Questions are… a form of touching",{v:+8,d:-2,r:+1,rec:"anointed"}]},
+{tag:{tl:"DOKTRINA",en:"DOCTRINE"},
+ verse:{tl:"“Huwag ninyong galawin ang mga pinahiran ko ng langis…” — Awit 105:15",en:"“Touch not mine anointed…” — Psalm 105:15"},
+ body:{tl:"Mungkahi ng isang deacon: sagot na raw ng talatang ito ang mga tanong sa budget kaninang umaga. At lahat ng tanong sa budget sa hinaharap. At lahat ng tanong, sa pangkalahatan.",
+       en:"A deacon suggests this verse settles this morning's budget questions. And all future budget questions. And questions generally."},
+ l:[{tl:"Malusog ang mga tanong",en:"Questions are healthy"},{v:-4,c:+1}], r:[{tl:"Ang tanong ay isang uri ng… paggalaw",en:"Questions are… a form of touching"},{v:+8,d:-2,r:+1,rec:"anointed"}]},
 
-{tag:"DOCTRINE — THE PRODUCT", verse:"“Let every soul be subject unto the higher powers.” — Romans 13:1",
- body:"If the flock submits to authority, and you are the authority, then a ballot is merely obedience with a pencil. The math checks out. The math has always checked out.",
- l:["Souls vote alone",{v:-3,c:+2}], r:["One flock. One vote. Yours.",{v:+10,d:-3,f:"bloc",rec:"blocvote"}]},
+{tag:{tl:"DOKTRINA — ANG PRODUKTO",en:"DOCTRINE — THE PRODUCT"},
+ verse:{tl:"“Ang bawat kaluluwa ay pasakop sa matataas na kapangyarihan.” — Roma 13:1",en:"“Let every soul be subject unto the higher powers.” — Romans 13:1"},
+ body:{tl:"Kung ang kawan ay pasakop sa kapangyarihan, at ikaw ang kapangyarihan, kung gana'n ang balota ay pagsunod lang na may lapis. Tama ang matematika. Laging tama ang matematika.",
+       en:"If the flock submits to authority, and you are the authority, then a ballot is merely obedience with a pencil. The math checks out. The math has always checked out."},
+ l:[{tl:"Mag-isang bumoboto ang kaluluwa",en:"Souls vote alone"},{v:-3,c:+2}], r:[{tl:"Isang kawan. Isang boto. Sa'yo.",en:"One flock. One vote. Yours."},{v:+10,d:-3,f:"bloc",rec:"blocvote"}]},
 
-{tag:"VISITOR", req:"bloc", body:"The Mayor arrives uninvited, kisses your hand for the photographer he also brought. He hears you can deliver 'a very disciplined congregation' and wonders about November. He mentions, idly, your building permits.",
- l:["We are apolitical (hold out for more)",{d:+2,f:"holdout"}], r:["Discuss November",{b:+8,d:-3,f:"machine"}]},
+{tag:{tl:"BISITA",en:"VISITOR"}, req:"bloc",
+ body:{tl:"Dumating ang Mayor nang walang imbitasyon, hinalikan ang kamay mo para sa photographer na dala rin niya. Narinig daw niyang may 'napakadisiplinadong kongregasyon' ka, at na-curious siya tungkol sa Nobyembre. Nabanggit niya, parang wala lang, ang building permits mo.",
+       en:"The Mayor arrives uninvited, kisses your hand for the photographer he also brought. He hears you can deliver 'a very disciplined congregation' and wonders about November. He mentions, idly, your building permits."},
+ l:[{tl:"Apolitical kami (maghintay ng mas mataas na alok)",en:"We are apolitical (hold out for more)"},{d:+2,f:"holdout"}], r:[{tl:"Pag-usapan ang Nobyembre",en:"Discuss November"},{b:+8,d:-3,f:"machine"}]},
 
-{tag:"AUCTION", req:"machine", body:"Two families bid for your endorsement. The Villafuegos offer cash. The Del Rosarios offer something better: the customs bureau will develop a permanent blind spot shaped exactly like your containers.",
- l:["Take the cash",{b:+10,d:-2}], r:["Take the blind spot",{b:+5,d:+4,f:"customs",rec:"deacon"}]},
+{tag:{tl:"SUBASTA",en:"AUCTION"}, req:"machine",
+ body:{tl:"Dalawang pamilya ang nag-uunahan sa endorsement mo. Ang mga Villafuego: cash. Ang mga Del Rosario: mas maganda — magkakaroon ang customs bureau ng permanenteng bulag na bahagi, hugis mismo ng mga container mo.",
+       en:"Two families bid for your endorsement. The Villafuegos offer cash. The Del Rosarios offer something better: the customs bureau will develop a permanent blind spot shaped exactly like your containers."},
+ l:[{tl:"Kunin ang cash",en:"Take the cash"},{b:+10,d:-2}], r:[{tl:"Kunin ang bulag na bahagi",en:"Take the blind spot"},{b:+5,d:+4,f:"customs",rec:"deacon"}]},
 
-{tag:"THE PLACEMENT WEB", req:"machine", body:"Brother Salvación has passed the elections-commission exam. Third of his batch. A pious man, a careful man, a man who will one day count things.",
- l:["Let his career unfold naturally",{c:+1}], r:["Accelerate his career unnaturally",{d:+3,v:+2,r:+1,f:"comelec",rec:"deacon"}]},
+{tag:{tl:"ANG PLACEMENT WEB",en:"THE PLACEMENT WEB"}, req:"machine",
+ body:{tl:"Pumasa si Brother Salvación sa exam ng elections commission. Pangatlo sa buong batch. Isang banal na tao, maingat na tao — isang taong balang araw ay magbibilang ng mga bagay-bagay.",
+       en:"Brother Salvación has passed the elections-commission exam. Third of his batch. A pious man, a careful man, a man who will one day count things."},
+ l:[{tl:"Hayaang natural na umusad ang career niya",en:"Let his career unfold naturally"},{c:+1}], r:[{tl:"Pabilisin nang hindi natural",en:"Accelerate his career unnaturally"},{d:+3,v:+2,r:+1,f:"comelec",rec:"deacon"}]},
 
-{tag:"CORRESPONDENCE", body:"Sister Mirasol asks permission to vote for her own brother, who is running against your endorsed candidate. For barangay captain. Of a village with one road.",
- l:["Family is sacred. Permitted.",{v:-3,c:+2}], r:["Unity is sacred. Denied.",{v:+5,r:+1,rec:"blocvote"}]},
+{tag:{tl:"SULAT",en:"CORRESPONDENCE"},
+ body:{tl:"Humihingi ng pahintulot si Sister Mirasol na iboto ang sarili niyang kapatid, na kalaban ng endorsed mong kandidato. Para sa barangay captain. Ng barangay na may isang kalsada.",
+       en:"Sister Mirasol asks permission to vote for her own brother, who is running against your endorsed candidate. For barangay captain. Of a village with one road."},
+ l:[{tl:"Sagrado ang pamilya. Payag.",en:"Family is sacred. Permitted."},{v:-3,c:+2}], r:[{tl:"Sagrado ang pagkakaisa. Hindi payag.",en:"Unity is sacred. Denied."},{v:+5,r:+1,rec:"blocvote"}]},
 
-{tag:"RIVAL", body:"A preacher across town has begun quoting your favorite verses — in context. Attendance dips. He has no security detail, no lawyers, and no idea.",
- l:["Ignore him. Context is boring.",{v:-4}], r:["Buy his landlord's building",{b:-6,v:+4,d:-1}]},
+{tag:{tl:"KARIBAL",en:"RIVAL"},
+ body:{tl:"May pastor sa kabilang bayan na nagsimulang mangaral gamit ang mga paborito mong talata — nang may KONTEKSTO. Bumababa ang attendance mo. Wala siyang security, walang abogado, at walang kamalay-malay.",
+       en:"A preacher across town has begun quoting your favorite verses — in context. Attendance dips. He has no security detail, no lawyers, and no idea."},
+ l:[{tl:"Hayaan. Nakakaantok ang konteksto.",en:"Ignore him. Context is boring."},{v:-4}], r:[{tl:"Bilhin ang building ng landlord niya",en:"Buy his landlord's building"},{b:-6,v:+4,d:-1}]},
 
-{tag:"PRESS", body:"A reporter from the Maharlika Tribune is asking where the tithes go. She has a spreadsheet. It is, annoyingly, accurate.",
- l:["Transparency: release the books",{v:-3,b:-4,c:+2}], r:["Sue her. Personally. Twice.",{d:-5,r:+2,f:"suedpress"}]},
+{tag:{tl:"MEDIA",en:"PRESS"},
+ body:{tl:"May reporter mula sa Maharlika Tribune na nagtatanong kung saan napupunta ang mga ikapu. May spreadsheet siya. Nakakainis: tama ito.",
+       en:"A reporter from the Maharlika Tribune is asking where the tithes go. She has a spreadsheet. It is, annoyingly, accurate."},
+ l:[{tl:"Transparency: ilabas ang libro",en:"Transparency: release the books"},{v:-3,b:-4,c:+2}], r:[{tl:"Kasuhan siya. Personal. Dalawang beses.",en:"Sue her. Personally. Twice."},{d:-5,r:+2,f:"suedpress"}]},
 
-{tag:"FAMILY", body:"Your brother — associate minister, beloved, sentimental — has been asking the finance committee 'clarifying questions.' The Sanggunian recommends clarity of a different kind.",
- l:["Hear him out, privately",{v:-4,c:+3,f:"heardbro"}], r:["Expel him. Family makes the best example.",{v:+9,r:+3,f:"purged",rec:"purge"}]},
+{tag:{tl:"PAMILYA",en:"FAMILY"},
+ body:{tl:"Ang kapatid mo — associate minister, mahal ng lahat, maramdamin — ay nagtatanong sa finance committee ng mga 'clarifying questions.' Rekomendasyon ng Sanggunian: linawin siya, sa ibang paraan.",
+       en:"Your brother — associate minister, beloved, sentimental — has been asking the finance committee 'clarifying questions.' The Sanggunian recommends clarity of a different kind."},
+ l:[{tl:"Pakinggan siya, nang sarilinan",en:"Hear him out, privately"},{v:-4,c:+3,f:"heardbro"}], r:[{tl:"I-tiwalag. Ang pamilya ang pinakamahusay na halimbawa.",en:"Expel him. Family makes the best example."},{v:+9,r:+3,f:"purged",rec:"purge"}]},
 
-{tag:"THE VIDEO", req:"purged", body:"Your brother has posted a video. Trembling voice, bad lighting, four million views: 'I am not safe.' The faithful are asking questions. The Verse-o-matic™ suggests Psalm 105:15 again.",
- l:["'We never said that. You misheard the sermon.' (Rewrite memory)",{v:-2,d:-4,r:+2}], r:["He was always troubled. Say it sadly.",{v:+4,r:+2,d:-2}]},
+{tag:{tl:"ANG VIDEO",en:"THE VIDEO"}, req:"purged",
+ body:{tl:"Nag-post ng video ang kapatid mo. Nanginginig na boses, madilim na ilaw, apat na milyong views: 'Hindi ako ligtas.' Nagtatanong na ang mga kapatid. Mungkahi ulit ng Verse-o-matic™: Awit 105:15.",
+       en:"Your brother has posted a video. Trembling voice, bad lighting, four million views: 'I am not safe.' The faithful are asking questions. The Verse-o-matic™ suggests Psalm 105:15 again."},
+ l:[{tl:"'Hindi namin sinabi 'yon. Mali ang pagkarinig mo sa sermon.' (Baguhin ang alaala)",en:"'We never said that. You misheard the sermon.' (Rewrite memory)"},{v:-2,d:-4,r:+2}], r:[{tl:"Matagal na siyang may problema. Sabihin ito nang malungkot.",en:"He was always troubled. Say it sadly."},{v:+4,r:+2,d:-2}]},
 
-{tag:"THE STATE BLINKS", req:"purged", body:"The Justice Ministry has accepted an illegal-detention complaint from an expelled minister. A prosecutor — young, unbribed, unmarried to anyone useful — has begun.",
- l:["Cooperate with the probe",{d:-6,v:-5,c:+3}], r:["Flood the capital's avenue until the probe dies",{v:+7,d:-8,r:+3,f:"occupied",rec:"occupy"}]},
+{tag:{tl:"KUMILOS ANG ESTADO",en:"THE STATE BLINKS"}, req:"purged",
+ body:{tl:"Tinanggap ng Justice Ministry ang illegal-detention complaint ng isang tiwalag na ministro. May prosecutor na nagsimula na — bata, hindi pa nabibili, hindi kasal sa sinumang kapaki-pakinabang.",
+       en:"The Justice Ministry has accepted an illegal-detention complaint from an expelled minister. A prosecutor — young, unbribed, unmarried to anyone useful — has begun."},
+ l:[{tl:"Makipagtulungan sa imbestigasyon",en:"Cooperate with the probe"},{d:-6,v:-5,c:+3}], r:[{tl:"Punuin ang kabisera ng tao hanggang mamatay ang kaso",en:"Flood the capital's avenue until the probe dies"},{v:+7,d:-8,r:+3,f:"occupied",rec:"occupy"}]},
 
-{tag:"PUBLIC WORKS", req:"machine", body:"The Del Rosarios return the favor: a flood-control contract for your construction arm. The engineer asks how much flood control you would like to actually build. He asks it with a completely straight face.",
- l:["Build the flood control",{b:+2,c:+2}], r:["Build the ribbon-cutting",{b:+12,r:+3,rec:"ghostproj"}]},
+{tag:{tl:"PUBLIC WORKS",en:"PUBLIC WORKS"}, req:"machine",
+ body:{tl:"Gumanti ng pabor ang mga Del Rosario: flood-control contract para sa construction arm mo. Tanong ng engineer kung gaano karaming flood control ang gusto mong TALAGANG ipatayo. Deretso ang mukha niya habang nagtatanong.",
+       en:"The Del Rosarios return the favor: a flood-control contract for your construction arm. The engineer asks how much flood control you would like to actually build. He asks it with a completely straight face."},
+ l:[{tl:"Ipatayo ang flood control",en:"Build the flood control"},{b:+2,c:+2}], r:[{tl:"Ipatayo ang ribbon-cutting",en:"Build the ribbon-cutting"},{b:+12,r:+3,rec:"ghostproj"}]},
 
-{tag:"THE ROLLS", body:"Tithe-per-member has sunk for six straight quarters, yet every district reports record attendance. Either God is multiplying the poor, or your deacons are editing arithmetic.",
- l:["Audit the rolls (admit doubt exists)",{v:-5,d:+2,f:"audited",rec:"rolls"}], r:["Trust the org chart",{v:+2,b:-5,f:"blind",rec:"rolls"}]},
+{tag:{tl:"ANG LISTAHAN NG MIYEMBRO",en:"THE ROLLS"},
+ body:{tl:"Anim na sunod na quarter nang bumababa ang ikapu-kada-miyembro, pero record attendance ang ulat ng bawat distrito. Alinman sa pinaparami ng Diyos ang mahihirap, o ine-edit ng mga deacon mo ang aritmetika.",
+       en:"Tithe-per-member has sunk for six straight quarters, yet every district reports record attendance. Either God is multiplying the poor, or your deacons are editing arithmetic."},
+ l:[{tl:"I-audit ang listahan (aminin na may duda)",en:"Audit the rolls (admit doubt exists)"},{v:-5,d:+2,f:"audited",rec:"rolls"}], r:[{tl:"Magtiwala sa org chart",en:"Trust the org chart"},{v:+2,b:-5,f:"blind",rec:"rolls"}]},
 
-{tag:"THE QUIET ONES", req:"audited", body:"The audit is in: thousands have faded — still on the rolls, long gone from the pews. A list of 'lapsed brethren' is prepared. Security asks how vigorously to 'shepherd them home.'",
- l:["Let them go",{b:-4,c:+3,rec:"leavers"}], r:["Shepherd them home. Vigorously.",{v:+3,r:+3,f:"hunted",rec:"leavers"}]},
+{tag:{tl:"ANG MGA TAHIMIK",en:"THE QUIET ONES"}, req:"audited",
+ body:{tl:"Lumabas ang audit: libu-libo na ang naglaho — nasa listahan pa rin, matagal nang wala sa mga bangko. May inihanda nang listahan ng mga 'lapsed brethren.' Tanong ng security kung gaano ka-'masigasig' ang pag-uwi sa kanila.",
+       en:"The audit is in: thousands have faded — still on the rolls, long gone from the pews. A list of 'lapsed brethren' is prepared. Security asks how vigorously to 'shepherd them home.'"},
+ l:[{tl:"Hayaan silang umalis",en:"Let them go"},{b:-4,c:+3,rec:"leavers"}], r:[{tl:"Iuwi sila. Nang masigasig.",en:"Shepherd them home. Vigorously."},{v:+3,r:+3,f:"hunted",rec:"leavers"}]},
 
-{tag:"FOREIGN PRESS", body:"A documentary crew has arrived from a cold, polite country. They film everything. Security proposes the standard package: spotlights into their lenses, and a knife for their tires.",
- l:["Full access. Hide nothing.",{v:-4,d:+5,c:+2,rec:"cbc"}], r:["The standard package",{d:-7,r:+3,f:"slashed",rec:"cbc"}]},
+{tag:{tl:"DAYUHANG MEDIA",en:"FOREIGN PRESS"},
+ body:{tl:"May dumating na documentary crew mula sa isang malamig at magalang na bansa. Kinukunan nila ang lahat. Mungkahi ng security ang standard package: ilaw sa lente nila, at kutsilyo sa gulong nila.",
+       en:"A documentary crew has arrived from a cold, polite country. They film everything. Security proposes the standard package: spotlights into their lenses, and a knife for their tires."},
+ l:[{tl:"Buksan ang lahat. Walang itago.",en:"Full access. Hide nothing."},{v:-4,d:+5,c:+2,rec:"cbc"}], r:[{tl:"Ang standard package",en:"The standard package"},{d:-7,r:+3,f:"slashed",rec:"cbc"}]},
 
-{tag:"BROADCAST", req:"slashed", body:"Their documentary airs abroad. The slashed tires are the opening shot. Your lawyer proposes suing them in their own courts, which he describes as 'a formality.'",
- l:["Let it fade",{v:-3}], r:["Sue abroad (a formality)",{b:-8,r:+3,d:-3}]},
+{tag:{tl:"ANG BROADCAST",en:"BROADCAST"}, req:"slashed",
+ body:{tl:"Umere ang dokumentaryo nila sa ibang bansa. Ang sinaksak na gulong ang opening shot. Mungkahi ng abogado mo: kasuhan sila sa sarili nilang korte — 'formality lang' daw.",
+       en:"Their documentary airs abroad. The slashed tires are the opening shot. Your lawyer proposes suing them in their own courts, which he describes as 'a formality.'"},
+ l:[{tl:"Hayaang kumupas",en:"Let it fade"},{v:-3}], r:[{tl:"Kasuhan sa abroad (formality lang)",en:"Sue abroad (a formality)"},{b:-8,r:+3,d:-3}]},
 
-{tag:"SPECTACLE", body:"The Ministry of Records proposes a world record: the largest fireworks display in human history. Eight hundred thousand fireworks. The word 'cult' will appear in zero headlines.",
- l:["Fireworks don't feed anyone",{v:-2,c:+1}], r:["Light the sky",{b:-9,v:+8,d:+5,rec:"record"}]},
+{tag:{tl:"PALABAS",en:"SPECTACLE"},
+ body:{tl:"Mungkahi ng Ministry of Records: world record — ang pinakamalaking fireworks display sa kasaysayan ng tao. Walong daang libong paputok. Ang salitang 'kulto' ay lalabas sa ZERO na headline.",
+       en:"The Ministry of Records proposes a world record: the largest fireworks display in human history. Eight hundred thousand fireworks. The word 'cult' will appear in zero headlines."},
+ l:[{tl:"Walang mabubusog sa paputok",en:"Fireworks don't feed anyone"},{v:-2,c:+1}], r:[{tl:"Sindihan ang langit",en:"Light the sky"},{b:-9,v:+8,d:+5,rec:"record"}]},
 
-{tag:"ACQUISITIONS", body:"An empty town is for sale in a foreign prairie. Forty hectares, one saloon, zero inhabitants. The broker does not ask why a church needs a ghost town. You do not tell him.",
- l:["Pass",{}], r:["Buy the ghost town",{b:-7,d:+3,rec:"ghosttown"}]},
+{tag:{tl:"MGA PAGBILI",en:"ACQUISITIONS"},
+ body:{tl:"May bakanteng bayan na ibinebenta sa isang dayuhang kapatagan. Apatnapung ektarya, isang saloon, zero na naninirahan. Hindi nagtanong ang broker kung bakit kailangan ng simbahan ng ghost town. Hindi mo rin sinabi.",
+       en:"An empty town is for sale in a foreign prairie. Forty hectares, one saloon, zero inhabitants. The broker does not ask why a church needs a ghost town. You do not tell him."},
+ l:[{tl:"Huwag na",en:"Pass"},{}], r:[{tl:"Bilhin ang ghost town",en:"Buy the ghost town"},{b:-7,d:+3,rec:"ghosttown"}]},
 
-{tag:"THE STRONGMAN", body:"A general has declared himself the cure for history. His soldiers shut your radio station at midnight — then at dawn his envoy arrives, offering it back. Plus contracts. Plus land. He only wants what everyone wants: everything.",
- l:["Keep your distance",{b:-6,v:-2,c:+2,f:"distant"}], r:["Bless the cure",{b:+12,r:+4,f:"blessed",rec:"strongman"}]},
+{tag:{tl:"ANG DIKTADOR",en:"THE STRONGMAN"},
+ body:{tl:"May heneral na nagdeklara na siya ang lunas sa kasaysayan. Isinara ng mga sundalo niya ang radio station mo nang hatinggabi — tapos kinaumagahan, dumating ang sugo niya, iniaalok itong ibalik. May kasama pang kontrata. At lupa. Isa lang naman ang gusto niya, gaya ng lahat: LAHAT.",
+       en:"A general has declared himself the cure for history. His soldiers shut your radio station at midnight — then at dawn his envoy arrives, offering it back. Plus contracts. Plus land. He only wants what everyone wants: everything."},
+ l:[{tl:"Lumayo",en:"Keep your distance"},{b:-6,v:-2,c:+2,f:"distant"}], r:[{tl:"Basbasan ang lunas",en:"Bless the cure"},{b:+12,r:+4,f:"blessed",rec:"strongman"}]},
 
-{tag:"THE LIST", req:"blessed", body:"The Strongman's police now solve poverty by subtraction. He asks you to preach that the dead were all guilty. The sermon is already drafted. Someone was paid per name on it.",
- l:["Refuse the sermon",{d:-5,b:-5,c:+4}], r:["Preach it",{v:+6,r:+6,f:"complicit",rec:"thelist"}]},
+{tag:{tl:"ANG LISTAHAN",en:"THE LIST"}, req:"blessed",
+ body:{tl:"Nilulutas na ngayon ng pulisya ng Diktador ang kahirapan sa pamamagitan ng pagbabawas. Hiling niya: ipangaral mong lahat ng namatay ay may kasalanan. Naka-draft na ang sermon. May binayaran kada pangalan dito.",
+       en:"The Strongman's police now solve poverty by subtraction. He asks you to preach that the dead were all guilty. The sermon is already drafted. Someone was paid per name on it."},
+ l:[{tl:"Tanggihan ang sermon",en:"Refuse the sermon"},{d:-5,b:-5,c:+4}], r:[{tl:"Ipangaral ito",en:"Preach it"},{v:+6,r:+6,f:"complicit",rec:"thelist"}]},
 
-{tag:"THE HOUR", req:"blessed", body:"Crowds fill the streets. The Strongman's statues are coming down in real time. Your endorsement of him is framed in his palace lobby. There is exactly one correct hour to switch sides, and it is now-ish.",
- l:["Loyalty to the end",{v:-9,b:-8,r:+2}], r:["Discover, publicly, that you always loved democracy",{v:+6,d:+4,rec:"strongman"}]},
+{tag:{tl:"ANG ORAS",en:"THE HOUR"}, req:"blessed",
+ body:{tl:"Puno ng tao ang mga kalye. Real-time na bumabagsak ang mga estatwa ng Diktador. Ang endorsement mo sa kanya, naka-frame sa lobby ng palasyo niya. May iisang tamang oras para lumipat ng panig — at 'yon ay ngayon-ngayon na.",
+       en:"Crowds fill the streets. The Strongman's statues are coming down in real time. Your endorsement of him is framed in his palace lobby. There is exactly one correct hour to switch sides, and it is now-ish."},
+ l:[{tl:"Tapat hanggang dulo",en:"Loyalty to the end"},{v:-9,b:-8,r:+2}], r:[{tl:"Matuklasan, sa publiko, na lagi mo palang minahal ang demokrasya",en:"Discover, publicly, that you always loved democracy"},{v:+6,d:+4,rec:"strongman"}]},
 
-{tag:"THE HEARING", body:"A senator — author of beloved laws, chair of nothing you control — has subpoenaed your books. Your allies propose the mirror-charge: accuse HER of the thing you did. The projection is, historically, reliable.",
- l:["Appear. Testify. Gaslight under oath.",{v:-3,d:-4,r:+1,rec:"hearing"}], r:["File the mirror-charge",{d:-6,r:+4,f:"mirrored",rec:"mirror"}]},
+{tag:{tl:"ANG PAGDINIG",en:"THE HEARING"},
+ body:{tl:"May senadora — may-akda ng mga minamahal na batas, chair ng komiteng hindi mo kontrolado — na nag-subpoena ng mga libro mo. Mungkahi ng mga alyado mo ang mirror-charge: akusahan SIYA ng ginawa mo. Ang projection, ayon sa kasaysayan, ay mapagkakatiwalaan.",
+       en:"A senator — author of beloved laws, chair of nothing you control — has subpoenaed your books. Your allies propose the mirror-charge: accuse HER of the thing you did. The projection is, historically, reliable."},
+ l:[{tl:"Sumipot. Tumestigo. Mag-gaslight nang naka-panunumpa.",en:"Appear. Testify. Gaslight under oath."},{v:-3,d:-4,r:+1,rec:"hearing"}], r:[{tl:"I-file ang mirror-charge",en:"File the mirror-charge"},{d:-6,r:+4,f:"mirrored",rec:"mirror"}]},
 
-{tag:"THE WITNESS", req:"mirrored", body:"A former pastoral was set to testify. A video surfaces instead: she recants, eyes darting off-camera to someone holding either cue cards or her family. The senator files cyberlibel within the hour.",
- l:["Release her. Withdraw the video.",{v:-4,c:+4}], r:["Amplify the recantation",{v:+4,r:+4,d:-4,rec:"hearing"}]},
+{tag:{tl:"ANG TESTIGO",en:"THE WITNESS"}, req:"mirrored",
+ body:{tl:"May dating pastoral na tetestigo sana. Sa halip, may video na lumabas: nagbabawi siya, palinga-linga ang mata sa may hawak ng cue cards — o ng pamilya niya. Nag-file ng cyberlibel ang senadora sa loob ng isang oras.",
+       en:"A former pastoral was set to testify. A video surfaces instead: she recants, eyes darting off-camera to someone holding either cue cards or her family. The senator files cyberlibel within the hour."},
+ l:[{tl:"Pakawalan siya. Bawiin ang video.",en:"Release her. Withdraw the video."},{v:-4,c:+4}], r:[{tl:"I-amplify ang pagbabawi",en:"Amplify the recantation"},{v:+4,r:+4,d:-4,rec:"hearing"}]},
 
-{tag:"OUR MAN IN THE SENATE", req:"comelec", body:"Brother Marcival — your man, your ballot line, your senator — has been charged with plunder over ₱75 million in 'donations.' Non-bailable. The faithful await the headline you choose.",
- l:["Headline: PLUNDER (let him fall)",{v:-8,d:+4,c:+2,rec:"senator"}], r:["Headline: PERSECUTION (rally the avenue)",{v:+6,d:-7,r:+3,f:"occupied2",rec:"senator"}]},
+{tag:{tl:"ANG AMING TAO SA SENADO",en:"OUR MAN IN THE SENATE"}, req:"comelec",
+ body:{tl:"Si Brother Marcival — ang tao mo, ang linya mo sa balota, ang senador mo — ay kinasuhan ng plunder: ₱75 milyon na 'donasyon.' Non-bailable. Hinihintay ng mga kapatid ang headline na pipiliin mo.",
+       en:"Brother Marcival — your man, your ballot line, your senator — has been charged with plunder over ₱75 million in 'donations.' Non-bailable. The faithful await the headline you choose."},
+ l:[{tl:"Headline: PLUNDER (hayaan siyang bumagsak)",en:"Headline: PLUNDER (let him fall)"},{v:-8,d:+4,c:+2,rec:"senator"}], r:[{tl:"Headline: PERSECUTION (punuin ang kalsada)",en:"Headline: PERSECUTION (rally the avenue)"},{v:+6,d:-7,r:+3,f:"occupied2",rec:"senator"}]},
 
-{tag:"THE PATRON", body:"A foreign embassy's cultural attaché admires your broadcasting arm. He offers 'audience development' — ten thousand accounts that never sleep and never disagree. Free. Which is, of course, the price.",
- l:["Decline the choir",{d:+2,c:+1}], r:["Accept the ghost choir",{v:+7,r:+3,f:"patron",rec:"patron"}]},
+{tag:{tl:"ANG AMO",en:"THE PATRON"},
+ body:{tl:"Hangang-hanga ang cultural attaché ng isang dayuhang embahada sa broadcasting arm mo. Alok niya: 'audience development' — sampung libong account na hindi natutulog at hindi sumasalungat. Libre. Na siya ngang, siyempre, presyo.",
+       en:"A foreign embassy's cultural attaché admires your broadcasting arm. He offers 'audience development' — ten thousand accounts that never sleep and never disagree. Free. Which is, of course, the price."},
+ l:[{tl:"Tanggihan ang koro",en:"Decline the choir"},{d:+2,c:+1}], r:[{tl:"Tanggapin ang ghost choir",en:"Accept the ghost choir"},{v:+7,r:+3,f:"patron",rec:"patron"}]},
 
-{tag:"CARTOGRAPHY", req:"patron", body:"The Patron's new map of the sea has grown a dash. Your news anchors have been provided the official position: the map has always had ten dashes. A fisherman's funeral is scheduled opposite your fireworks.",
- l:["Mention the dash",{d:-4,v:-2,c:+2,rec:"dash"}], r:["The map has always had ten dashes",{v:+3,r:+2,rec:"dash"}]},
+{tag:{tl:"KARTOGRAPIYA",en:"CARTOGRAPHY"}, req:"patron",
+ body:{tl:"Ang bagong mapa ng Amo sa dagat: may tumubo na namang dash. Nabigyan na ng opisyal na linya ang mga news anchor mo: matagal nang may sampung dash ang mapa. May libing ng mangingisda sa mismong oras ng fireworks mo.",
+       en:"The Patron's new map of the sea has grown a dash. Your news anchors have been provided the official position: the map has always had ten dashes. A fisherman's funeral is scheduled opposite your fireworks."},
+ l:[{tl:"Banggitin ang dash",en:"Mention the dash"},{d:-4,v:-2,c:+2,rec:"dash"}], r:[{tl:"Matagal nang may sampung dash ang mapa",en:"The map has always had ten dashes"},{v:+3,r:+2,rec:"dash"}]},
 
-{tag:"THE COMPETITION", body:"The Appointed Son of God (self-styled; franchise rival) has been arrested for what the indictment calls, at length, everything. He announces his Senate run from Cell Block D. His followers call it persecution. His lawyers call it 'novel.'",
- l:["Publicly pray for him (solidarity of shepherds)",{v:+2,r:+1,rec:"jailrun"}], r:["Quietly absorb his congregations",{v:+6,b:+6,d:-2,rec:"jailrun"}]},
+{tag:{tl:"ANG KUMPETISYON",en:"THE COMPETITION"},
+ body:{tl:"Naaresto ang Hinirang na Anak ng Diyos (sariling titulo; karibal na franchise) dahil sa tinatawag ng indictment, nang mahaba, na LAHAT. Inanunsyo niya ang kandidatura niya sa Senado mula sa Cell Block D. Sabi ng mga tagasunod niya: persecution. Sabi ng mga abogado niya: 'novel.'",
+       en:"The Appointed Son of God (self-styled; franchise rival) has been arrested for what the indictment calls, at length, everything. He announces his Senate run from Cell Block D. His followers call it persecution. His lawyers call it 'novel.'"},
+ l:[{tl:"Ipagdasal siya sa publiko (pagkakaisa ng mga pastol)",en:"Publicly pray for him (solidarity of shepherds)"},{v:+2,r:+1,rec:"jailrun"}], r:[{tl:"Tahimik na sipsipin ang mga kongregasyon niya",en:"Quietly absorb his congregations"},{v:+6,b:+6,d:-2,rec:"jailrun"}]},
 
-{tag:"THE REFORMER", body:"The senator investigating you also wrote the Mental Health Act. The mothers love her. Your consultants explain, with slides: the country must first forget the law to hate its author. Budget: considerable.",
- l:["Some people cannot be bought down",{d:-2,c:+2,rec:"reformer"}], r:["Fund the forgetting",{b:-8,d:+4,r:+4,rec:"reformer"}]},
+{tag:{tl:"ANG REPORMISTA",en:"THE REFORMER"},
+ body:{tl:"Ang senadorang nag-iimbestiga sa'yo ay siya ring sumulat ng Mental Health Act. Mahal siya ng mga nanay. Paliwanag ng mga consultant mo, may slides pa: kailangan munang MALIMUTAN ng bayan ang batas bago nito makayang kamuhian ang may-akda. Budget: malaki-laki.",
+       en:"The senator investigating you also wrote the Mental Health Act. The mothers love her. Your consultants explain, with slides: the country must first forget the law to hate its author. Budget: considerable."},
+ l:[{tl:"May mga taong hindi kayang bilhin pababa",en:"Some people cannot be bought down"},{d:-2,c:+2,rec:"reformer"}], r:[{tl:"Pondohan ang paglimot",en:"Fund the forgetting"},{b:-8,d:+4,r:+4,rec:"reformer"}]},
 
-{tag:"SUCCESSION", body:"Your son sits in the front pew now, mouthing your sermons a half-second early. The Sanggunian notes that hereditary succession has 'strong scriptural precedent,' which is not true, which has never mattered.",
- l:["The church should outgrow one family",{v:-4,c:+3,f:"open"}], r:["Groom the boy",{v:+5,f:"dynasty"}]},
+{tag:{tl:"PAGHALILI",en:"SUCCESSION"},
+ body:{tl:"Nakaupo na ngayon ang anak mo sa unahang bangko, kinakanta ang mga sermon mo kalahating segundong mas maaga. Ayon sa Sanggunian, ang paghalili ng dugo ay may 'matibay na batayan sa kasulatan' — na hindi totoo, na kailanman ay hindi naging mahalaga.",
+       en:"Your son sits in the front pew now, mouthing your sermons a half-second early. The Sanggunian notes that hereditary succession has 'strong scriptural precedent,' which is not true, which has never mattered."},
+ l:[{tl:"Dapat lumampas ang simbahan sa isang pamilya",en:"The church should outgrow one family"},{v:-4,c:+3,f:"open"}], r:[{tl:"Sanayin ang bata",en:"Groom the boy"},{v:+5,f:"dynasty"}]},
 
-{tag:"THE OFFICER", req:"occupied2", body:"A police general — a member, baptized at nine, faithful for forty years — has been ordered to serve the warrant on Brother Marcival. He asks for your blessing to do his duty. His mother is in the third pew.",
- l:["Bless his duty",{v:-6,d:+3,c:+4}], r:["Expel him (tiwalag). His mother too.",{v:+7,r:+5,f:"purgedcop",rec:"purge"}]}
+{tag:{tl:"ANG OPISYAL",en:"THE OFFICER"}, req:"occupied2",
+ body:{tl:"May police general — miyembro, bininyagan sa edad na siyam, tapat sa loob ng apatnapung taon — na inutusang i-serve ang warrant kay Brother Marcival. Hinihingi niya ang basbas mo para gampanan ang tungkulin niya. Nasa pangatlong bangko ang nanay niya.",
+       en:"A police general — a member, baptized at nine, faithful for forty years — has been ordered to serve the warrant on Brother Marcival. He asks for your blessing to do his duty. His mother is in the third pew."},
+ l:[{tl:"Basbasan ang tungkulin niya",en:"Bless his duty"},{v:-6,d:+3,c:+4}], r:[{tl:"I-tiwalag siya. Pati ang nanay niya.",en:"Expel him (tiwalag). His mother too."},{v:+7,r:+5,f:"purgedcop",rec:"purge"}]}
 ];
 
-/* endings ---------------------------------------------------------------- */
-const ENDINGS = {
-  schism:   ["EMPTY PEWS","The doctrine debt was called in. The pews emptied not with a bang but with a shrug — the Fade, complete. Your last sermon was attended by four deacons, three of whom were counting the silverware."],
-  deified:  ["THE APPOINTED","Unity hit a number with no remainder for doubt. Somewhere in the applause you stopped being the messenger and became the message. Self-deification is not an exit; it is a locked door that worships itself."],
-  broke:    ["CHAPTER 11:1–4","Blessings ran dry. The jets were leased, the arena mortgaged, the ghost town — unsellable, obviously. The receivers arrive Monday. They are very polite. They have a spreadsheet. It is, annoyingly, accurate."],
-  forbes:   ["THE RICH LIST","You made a list you cannot tithe your way off. Forbes called it a fortune; the Bureau of Internal Revenue called it Exhibit A. Too much light is also an exposure."],
-  indicted: ["THE PROSECUTOR","Plausible deniability reached zero — there was nothing left to plausibly deny. The young prosecutor's file had grown for thirty years. Files, unlike witnesses, do not recant."],
-  hague:    ["THE RECKONING","It arrived the way it always does: slowly, then in a single morning. The plane. The warrant. The dock with your name misspelled. The transcript they said was worthless in Year 12 was read aloud in full. It had not aged."],
-  dynasty:  ["THE DYNASTY","You died in bed, beloved, unindicted, mourned by millions on channels you own. Your son placed his hand on the same twisted verse. The machine did not miss a single collection. This is the ending where the machine wins. It usually does."],
-  dismantle:["THE DISMANTLING","You spent it all — every favor, every secret, every deacon — burning the machine from the inside. The church that remains is small, poor, and honest. Eleven pews. One leak in the roof. It is enough. It was always enough."]
+const ENDINGS={
+ schism:{tl:["MGA BAKANTENG BANGKO","Siningil na ang utang ng doktrina. Hindi sumabog ang simbahan — dahan-dahan lang itong umupo nang papaliit: ang Paglaho, kumpleto na. Apat na deacon ang nakinig sa huling sermon mo. Tatlo sa kanila, nagbibilang ng kubyertos."],
+        en:["EMPTY PEWS","The doctrine debt was called in. The pews emptied not with a bang but with a shrug — the Fade, complete. Your last sermon was attended by four deacons, three of whom were counting the silverware."]},
+ deified:{tl:["ANG HINIRANG","Umabot ang Pagkakaisa sa numerong walang natirang puwang sa duda. Sa gitna ng palakpakan, tumigil ka sa pagiging mensahero at naging mensahe. Ang pagiging diyos ay hindi labasan — isa itong kandadong pinto na sumasamba sa sarili."],
+        en:["THE APPOINTED","Unity hit a number with no remainder for doubt. Somewhere in the applause you stopped being the messenger and became the message. Self-deification is not an exit; it is a locked door that worships itself."]},
+ broke:{tl:["KABANATA 11:1–4","Natuyo ang Biyaya. Ang mga jet: leased pala. Ang arena: naka-sangla. Ang ghost town — hindi maibenta, siyempre. Darating ang mga receiver sa Lunes. Napaka-magalang nila. May spreadsheet sila. Nakakainis: tama ito."],
+        en:["CHAPTER 11:1–4","Blessings ran dry. The jets were leased, the arena mortgaged, the ghost town — unsellable, obviously. The receivers arrive Monday. They are very polite. They have a spreadsheet. It is, annoyingly, accurate."]},
+ forbes:{tl:["ANG RICH LIST","Nakapasok ka sa listahang hindi mo ma-ikapu palabas. Tinawag itong yaman ng Forbes; tinawag itong Exhibit A ng BIR. Ang sobrang liwanag ay isa ring pagkakalantad."],
+        en:["THE RICH LIST","You made a list you cannot tithe your way off. Forbes called it a fortune; the tax bureau called it Exhibit A. Too much light is also an exposure."]},
+ indicted:{tl:["ANG PROSECUTOR","Umabot sa zero ang Palusot — wala nang natirang maipalusot. Tatlumpung taong lumaki ang file ng batang prosecutor. Ang mga file, hindi tulad ng mga testigo, ay hindi nagbabawi."],
+        en:["THE PROSECUTOR","Plausible deniability reached zero — there was nothing left to plausibly deny. The young prosecutor's file had grown for thirty years. Files, unlike witnesses, do not recant."]},
+ hague:{tl:["ANG PANINGIL","Dumating ito sa paraang lagi nitong pagdating: dahan-dahan, tapos sa isang umaga lang. Ang eroplano. Ang warrant. Ang korteng mali pa ang baybay ng pangalan mo. Ang transcript na sinabi nilang walang kwenta noong Ikalabindalawang Taon — binasa nang buo. Hindi ito tumanda."],
+        en:["THE RECKONING","It arrived the way it always does: slowly, then in a single morning. The plane. The warrant. The dock with your name misspelled. The transcript they said was worthless in Year 12 was read aloud in full. It had not aged."]},
+ dynasty:{tl:["ANG DINASTIYA","Namatay ka sa kama, minamahal, hindi nakasuhan, ipinagluksa ng milyun-milyon sa mga channel na pag-aari mo. Ipinatong ng anak mo ang kamay niya sa parehong pinilipit na talata. Walang napalampas na kahit isang kolekta ang makina. Ito ang endings kung saan nananalo ang makina. Kadalasan, nananalo ito."],
+        en:["THE DYNASTY","You died in bed, beloved, unindicted, mourned by millions on channels you own. Your son placed his hand on the same twisted verse. The machine did not miss a single collection. This is the ending where the machine wins. It usually does."]},
+ dismantle:{tl:["ANG PAGBUWAG","Ginastos mo ang lahat — bawat pabor, bawat sikreto, bawat deacon — para sunugin ang makina mula sa loob. Ang simbahang natira: maliit, mahirap, at tapat. Labing-isang bangko. Isang butas sa bubong. Sapat na. Noon pa man, sapat na."],
+        en:["THE DISMANTLING","You spent it all — every favor, every secret, every deacon — burning the machine from the inside. The church that remains is small, poor, and honest. Eleven pews. One leak in the roof. It is enough. It was always enough."]}
 };
 
-/* engine ----------------------------------------------------------------- */
+const UI={
+ year:{tl:"Taon ng Ating Panginoon",en:"Year of Our Lord"},
+ souls:{tl:"kaluluwa sa listahan*",en:"souls on the rolls*"},
+ foot:{tl:"*bilang galing sa mga deacon, kaya naman totoo",en:"*figure supplied by deacons and therefore true"},
+ rec:{tl:"ANG MGA RESIBO — akala mo imbento lang namin",en:"The Receipts — you thought we made this up"},
+ norec:{tl:"Natapos ka nang walang resibo. Kahanga-hanga. Halos kahina-hinala.",en:"You finished with no receipts. Remarkable. Almost suspicious."},
+ reign:{tl:"Paghahari",en:"Reign"}, yrs:{tl:"taon",en:"years"},
+ rtok:{tl:"Reckoning tokens",en:"Reckoning tokens"}, cons:{tl:"Konsensya",en:"Conscience"},
+ again:{tl:"Magtayo ng Panibagong Simbahan",en:"Found Another Church"},
+ mV:{tl:"✝ Vibes",en:"✝ Vibes"}, mB:{tl:"₱ Biyaya",en:"₱ Blessings"}, mD:{tl:"🕶 Palusot",en:"🕶 Deniability"}
+};
+
 let queue=[], app=document.getElementById("app");
-
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
 function buildQueue(){
-  queue = shuffle(DECK.slice());
-  // keep intro first
-  queue.sort((a,b)=>(a.tag==="THE CALLING"?-1:0)-(b.tag==="THE CALLING"?-1:0));
+  queue=shuffle(DECK.slice());
+  queue.sort((a,b)=>((T(a.tag)==="ANG TAWAG"||T(a.tag)==="THE CALLING")?-1:0)-((T(b.tag)==="ANG TAWAG"||T(b.tag)==="THE CALLING")?-1:0));
 }
-
 function nextCard(){
-  for(let i=0;i<queue.length;i++){
-    const c=queue[i];
-    if(!c.req || S.flags[c.req]){ queue.splice(i,1); return c; }
-  }
+  for(let i=0;i<queue.length;i++){ const c=queue[i];
+    if(!c.req||S.flags[c.req]){ queue.splice(i,1); return c; } }
   return null;
 }
-
 function meterBar(label,val,warn){
   return `<div class="meter"><div class="label">${label}</div>
     <div class="bar ${warn?"warn":""}"><i style="width:${val}%"></i></div></div>`;
 }
-
 function renderHUD(){
-  return `<header><h1>CHURCH, INC.</h1><div class="sub">Salvation Sold Separately</div></header>
+  return `<header><h1>CHURCH INCORPORATED</h1>
+  <div class="sub">${LANG==="tl"?"Kaligtasan, Ibinebenta nang Hiwalay":"Salvation Sold Separately"}</div>
+  <button id="langbtn">${LANG==="tl"?"EN":"TL"}</button></header>
   <div id="meters">
-    ${meterBar("✝ Vibes",S.v,S.v<20||S.v>85)}
-    ${meterBar("₱ Blessings",S.b,S.b<20||S.b>85)}
-    ${meterBar("🕶 Deniability",S.d,S.d<25)}
+    ${meterBar(T(UI.mV),S.v,S.v<20||S.v>85)}
+    ${meterBar(T(UI.mB),S.b,S.b<20||S.b>85)}
+    ${meterBar(T(UI.mD),S.d,S.d<25)}
   </div>
-  <div id="status"><span>Year of Our Lord ${S.year}</span><span>${S.followers.toLocaleString()} souls on the rolls*</span></div>`;
+  <div id="status"><span>${T(UI.year)} ${S.year}</span><span>${S.followers.toLocaleString()} ${T(UI.souls)}</span></div>`;
 }
-
+function bindLang(f){ const b=document.getElementById("langbtn"); if(b)b.onclick=()=>{LANG=LANG==="tl"?"en":"tl";f();}; }
 function apply(e){
-  if(!e) return;
+  if(!e)return;
   if(e.v)S.v=clamp(S.v+e.v); if(e.b)S.b=clamp(S.b+e.b); if(e.d)S.d=clamp(S.d+e.d);
   if(e.c)S.conscience+=e.c; if(e.r)S.reckon+=e.r;
   if(e.f)S.flags[e.f]=true; if(e.rec)S.receipts.add(e.rec);
 }
-
 function tick(){
-  S.year += 2+Math.floor(Math.random()*2);
-  const growth = Math.round(S.followers*(0.06+S.v/400));
-  S.followers += (S.flags.blind? Math.max(growth,120) : growth) - (S.flags.hunted?Math.floor(S.followers*0.01):0);
+  S.year+=2+Math.floor(Math.random()*2);
+  const g=Math.round(S.followers*(0.06+S.v/400));
+  S.followers+=(S.flags.blind?Math.max(g,120):g)-(S.flags.hunted?Math.floor(S.followers*0.01):0);
 }
-
 function checkEnd(){
-  if(S.v<=0) return "schism";
-  if(S.v>=100) return "deified";
-  if(S.b<=0) return "broke";
-  if(S.b>=100) return "forbes";
-  if(S.d<=0) return S.reckon>=14 ? "hague" : "indicted";
+  if(S.v<=0)return"schism"; if(S.v>=100)return"deified";
+  if(S.b<=0)return"broke"; if(S.b>=100)return"forbes";
+  if(S.d<=0)return S.reckon>=14?"hague":"indicted";
   return null;
 }
-
+let CUR=null;
 function showCard(){
-  const c = nextCard();
-  if(!c){ endGame( S.conscience>=12 ? "dismantle" : (S.reckon>=16 ? "hague" : "dynasty") ); return; }
-  app.innerHTML = renderHUD() + `
+  if(!CUR) CUR=nextCard();
+  const c=CUR;
+  if(!c){ endGame(S.conscience>=12?"dismantle":(S.reckon>=16?"hague":"dynasty")); return; }
+  app.innerHTML=renderHUD()+`
    <div id="cardZone"><div class="card">
-     <div class="tag">${c.tag}</div>
-     ${c.verse?`<p class="verse">${c.verse}</p>`:""}
-     <p class="body">${c.body}</p>
+     <div class="tag">${T(c.tag)}</div>
+     ${c.verse?`<p class="verse">${T(c.verse)}</p>`:""}
+     <p class="body">${T(c.body)}</p>
    </div></div>
    <div id="choices">
-     <button id="L">${c.l[0]}</button>
-     <button id="R">${c.r[0]}</button>
+     <button id="L">${T(c.l[0])}</button>
+     <button id="R">${T(c.r[0])}</button>
    </div>
-   <footer>*figure supplied by deacons and therefore true</footer>`;
-  document.getElementById("L").onclick=()=>{ apply(c.l[1]); after(); };
-  document.getElementById("R").onclick=()=>{ apply(c.r[1]); after(); };
+   <footer>${T(UI.foot)}</footer>`;
+  bindLang(showCard);
+  document.getElementById("L").onclick=()=>{apply(c.l[1]);CUR=null;after();};
+  document.getElementById("R").onclick=()=>{apply(c.r[1]);CUR=null;after();};
 }
-
-function after(){
-  tick();
-  const e=checkEnd();
-  if(e){ endGame(e); } else { showCard(); }
-}
-
+function after(){ tick(); const e=checkEnd(); if(e){endGame(e);}else{showCard();} }
 function receiptsHTML(){
-  if(S.receipts.size===0) return "<p class='fine'>You finished with no receipts. Remarkable. Almost suspicious.</p>";
-  let li="";
-  S.receipts.forEach(k=>{ const c=CODEX[k]; if(c) li+=`<li><b>${c[0]}.</b> <span>${c[1]}</span></li>`; });
-  return `<div id="receipts"><h3>The Receipts — you thought we made this up</h3><ul>${li}</ul></div>`;
+  if(S.receipts.size===0)return`<p class='fine'>${T(UI.norec)}</p>`;
+  let li=""; S.receipts.forEach(k=>{const c=CODEX[k][LANG]; if(c)li+=`<li><b>${c[0]}.</b> <span style="color:var(--muted);font-style:italic;">${c[1]}</span></li>`;});
+  return`<div id="receipts"><h3>${T(UI.rec)}</h3><ul>${li}</ul></div>`;
 }
-
+let ENDKEY=null;
 function endGame(key){
+  if(key)ENDKEY=key;
+  const e=ENDINGS[ENDKEY][LANG];
   S.over=true;
-  const [title,text]=ENDINGS[key];
-  app.innerHTML = renderHUD() + `<div class="screen">
-    <h2>${title}</h2>
-    <p>${text}</p>
-    <p class="fine">Reign: ${S.year-1926} years · ${S.followers.toLocaleString()} souls on the rolls · Reckoning tokens: ${S.reckon} · Conscience: ${S.conscience}</p>
+  app.innerHTML=renderHUD()+`<div class="screen">
+    <h2>${e[0]}</h2>
+    <p>${e[1]}</p>
+    <p class="fine">${T(UI.reign)}: ${S.year-1926} ${T(UI.yrs)} · ${S.followers.toLocaleString()} ${T(UI.souls).replace("*","")} · ${T(UI.rtok)}: ${S.reckon} · ${T(UI.cons)}: ${S.conscience}</p>
     ${receiptsHTML()}
-    <button onclick="location.reload()">Found Another Church</button>
+    <button onclick="location.reload()">${T(UI.again)}</button>
   </div>`;
+  bindLang(()=>endGame());
 }
-
 function title(){
-  app.innerHTML = `<div class="screen">
-    <h2 style="font-size:2rem;letter-spacing:.2em;">CHURCH, INC.</h2>
-    <p class="fine" style="letter-spacing:.3em;text-transform:uppercase;">Salvation Sold Separately</p>
-    <p style="margin-top:22px;">The Republic of Maharlika, 1926. A chapel with a leaking roof, a Bible with promising ambiguities, and a century of opportunity.</p>
-    <p class="fine">Grow the flock. Twist the Word. Rent the state. Mind your three meters — and the two you cannot see.</p>
-    <p class="fine">Every dark mechanic in this game is documented. The receipts arrive at the end. They always do.</p>
-    <button onclick="startGame()">Answer the Calling</button>
-    <p class="fine" style="margin-top:18px;">Prototype v0.1 — The Shepherd campaign · The Senator campaign: awaiting quorum</p>
+  app.innerHTML=`<div class="screen">
+    <h2 style="font-size:2.1rem;letter-spacing:.18em;">CHURCH<br>INCORPORATED</h2>
+    <p class="fine" style="letter-spacing:.26em;text-transform:uppercase;">${LANG==="tl"?"Kaligtasan, Ibinebenta nang Hiwalay":"Salvation Sold Separately"}</p>
+    <p style="margin-top:22px;">${LANG==="tl"
+      ?"Ang Republika ng Maharlika, 1926. Isang kapilyang may butas ang bubong, isang Bibliyang puno ng mga 'pwedeng pag-usapan,' at isang siglo ng oportunidad."
+      :"The Republic of Maharlika, 1926. A chapel with a leaking roof, a Bible with promising ambiguities, and a century of opportunity."}</p>
+    <p class="fine">${LANG==="tl"
+      ?"Palaguin ang kawan. Pilipitin ang Salita. Upahan ang gobyerno. Bantayan ang tatlong metro mo — at ang dalawang hindi mo nakikita."
+      :"Grow the flock. Twist the Word. Rent the state. Mind your three meters — and the two you cannot see."}</p>
+    <p class="fine">${LANG==="tl"
+      ?"Bawat madilim na mekanika sa larong ito ay dokumentado. Darating ang mga resibo sa dulo. Lagi silang dumarating."
+      :"Every dark mechanic in this game is documented. The receipts arrive at the end. They always do."}</p>
+    <button onclick="startGame()">${LANG==="tl"?"Sagutin ang Tawag":"Answer the Calling"}</button>
+    <div><button class="ghost" id="tl2">${LANG==="tl"?"Play in English":"Maglaro sa Tagalog"}</button></div>
+    <p class="fine" style="margin-top:18px;">v0.2 — ${LANG==="tl"?"Ang kampanya ng Pastol · Ang kampanya ng Senador: naghihintay ng korum":"The Shepherd campaign · The Senator campaign: awaiting quorum"}</p>
   </div>`;
+  document.getElementById("tl2").onclick=()=>{LANG=LANG==="tl"?"en":"tl";title();};
 }
-
-window.startGame=function(){ buildQueue(); showCard(); };
+window.startGame=function(){ buildQueue(); CUR=null; showCard(); };
 title();
 </script>
 </body>

@@ -12,7 +12,7 @@ documented, all receipted in-game.
 |---|---|
 | [Boss Edition](boss/) | Face the ten bosses of budol — and the final boss, THE SURRENDER. Tagalog + English. |
 | [Sink or Swim](sagip/) | One campaign season, 25 chapters, a rising flood. The country swims or sinks on your answers. |
-| [Church, Inc.](churchinc/) | Satire: play the cult leader and learn the machine from inside. English. |
+| [Church Incorporated](churchinc/) | Satire: play the cult leader and learn the machine from inside. Tagalog + English. |
 
 ## The one rule
 
