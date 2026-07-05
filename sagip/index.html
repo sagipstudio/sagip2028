@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAGIP PILIPINAS 2028 — Sink or Swim</title>
+<style>
+  :root{ --sea:#0b3d5c; --deep:#072a41; --sky:#10222e; --sun:#f5b52e; --paper:#f4efe2;
+         --ink:#1d2733; --muted:#8fa7b5; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{ background:var(--sky); color:var(--paper); font-family:'Segoe UI',system-ui,sans-serif;
+        min-height:100vh; display:flex; justify-content:center; overflow-x:hidden;}
+  #app{ width:100%; max-width:520px; padding:14px; display:flex; flex-direction:column; min-height:100vh; position:relative; z-index:2;}
+  #skyline{ position:fixed; bottom:0; left:0; right:0; z-index:0; text-align:center;
+           font-size:3.1rem; letter-spacing:.04em; white-space:nowrap; overflow:hidden;
+           filter:saturate(.85) drop-shadow(0 3px 8px rgba(0,0,0,.6));
+           transition:bottom 1.2s ease;}
+  #skyline .tarp{ display:inline-block; background:#c0392b; color:#fff; font-size:.62rem;
+           font-weight:700; padding:2px 6px; border-radius:2px; transform:rotate(-4deg) translateY(-38px);
+           letter-spacing:.05em; box-shadow:0 2px 5px rgba(0,0,0,.5);}
+  #ocean{ position:fixed; left:0; right:0; bottom:0; height:18%; z-index:1;
+          background:
+            repeating-linear-gradient(180deg, rgba(255,240,190,.05) 0 2px, transparent 2px 28px),
+            linear-gradient(180deg, rgba(133,101,45,.93), #34270f 70%);
+          box-shadow:inset 0 14px 34px rgba(0,0,0,.45);
+          transition:height 1.2s ease; border-top:3px solid rgba(224,196,120,.65);}
+  #ocean .wave{ position:absolute; top:-11px; left:0; right:0; height:12px; opacity:.6;
+          background:radial-gradient(circle at 10px -4px, transparent 10px, rgba(230,205,140,.5) 11px, transparent 13px) repeat-x;
+          background-size:24px 12px; animation:wob 3s linear infinite;}
+  #ocean .wave2{ position:absolute; top:-5px; left:0; right:0; height:12px; opacity:.3;
+          background:radial-gradient(circle at 10px -4px, transparent 10px, rgba(230,205,140,.5) 11px, transparent 13px) repeat-x;
+          background-size:34px 12px; animation:wob 5.2s linear infinite reverse;}
+  @keyframes wob{ from{background-position-x:0;} to{background-position-x:24px;} }
+  #debris{ position:absolute; top:-26px; left:0; right:0; text-align:center; font-size:1.4rem;
+          letter-spacing:1.1em; white-space:nowrap; overflow:hidden;
+          animation:bob 3.6s ease-in-out infinite alternate;}
+  @keyframes bob{ from{transform:translateY(0);} to{transform:translateY(6px);} }
+  #rain{ position:fixed; inset:0; z-index:3; pointer-events:none; opacity:0; transition:opacity 1.5s;
+     background:repeating-linear-gradient(75deg, transparent 0 9px, rgba(190,210,230,.07) 9px 10px);
+     animation:rainfall .45s linear infinite;}
+  @keyframes rainfall{ from{background-position:0 0;} to{background-position:-40px 80px;} }
+  body.storm #rain{ opacity:1;}
+  #ticker{ font-size:.68rem; color:#d9c27a; font-style:italic; text-align:center;
+     padding:4px 6px 0; opacity:.9; letter-spacing:.02em;}
+  #gauge{ color:#d9c27a; font-style:italic;}
+  header{ text-align:center; padding:8px 0 4px; position:relative;}
+  header h1{ font-size:1.05rem; letter-spacing:.14em; color:var(--sun);}
+  header .sub{ font-size:.66rem; color:var(--muted); letter-spacing:.2em; text-transform:uppercase;}
+  #langbtn{ position:absolute; right:0; top:4px; background:transparent; color:var(--muted);
+     border:1px solid rgba(255,255,255,.25); border-radius:5px; padding:3px 8px; font-size:.68rem; cursor:pointer;}
+  #hud{ display:flex; justify-content:space-between; font-size:.72rem; color:var(--muted); padding:8px 2px;}
+  #hud b{ color:var(--sun); font-weight:600;}
+  #stage{ flex:1; display:flex; align-items:center; padding:8px 0 120px;}
+  .card{ background:var(--paper); color:var(--ink); border-radius:10px; padding:20px 18px;
+         width:100%; box-shadow:0 10px 34px rgba(0,0,0,.5); animation:pop .35s ease;}
+  @keyframes pop{ from{transform:translateY(12px);opacity:0;} to{transform:none;opacity:1;} }
+  .card .tag{ font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:#5c718a; margin-bottom:8px;}
+  .card p{ font-size:.95rem; line-height:1.5; margin-bottom:8px;}
+  .card .quote{ background:#e7e0cd; border-left:3px solid var(--sun); padding:8px 10px; font-style:italic; font-size:.88rem; margin:8px 0; border-radius:0 6px 6px 0;}
+  .choices{ margin-top:12px; display:flex; flex-direction:column; gap:8px;}
+  .choices button{ background:var(--ink); color:var(--paper); border:none; border-radius:7px;
+     padding:12px; font-family:inherit; font-size:.86rem; line-height:1.35; cursor:pointer; text-align:left; transition:background .15s;}
+  .choices button:hover{ background:#2f4055;}
+  .screen{ flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding:16px 4px 130px; animation:pop .4s ease;}
+  .screen h2{ color:var(--sun); font-size:1.5rem; letter-spacing:.08em; margin-bottom:12px;}
+  .screen p{ line-height:1.6; font-size:.93rem; margin-bottom:10px;}
+  .fine{ color:var(--muted); font-size:.76rem; line-height:1.55;}
+  .btn{ margin:10px auto 0; background:var(--sun); color:#231a05; border:none; border-radius:7px;
+        padding:13px 26px; font-family:inherit; font-size:.95rem; font-weight:600; cursor:pointer;}
+  .btn.alt{ background:transparent; color:var(--sun); border:1px solid var(--sun);}
+  #headlines{ text-align:left; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.15);
+     border-radius:8px; padding:12px 14px; margin:12px 0; max-height:30vh; overflow-y:auto;}
+  #headlines div{ font-size:.8rem; line-height:1.5; padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.12);}
+  #headlines b{ color:var(--sun);}
+  #dims{ text-align:left; margin:10px 0;}
+  .dim{ margin-bottom:8px;}
+  .dim .lbl{ display:flex; justify-content:space-between; font-size:.74rem; color:var(--paper); margin-bottom:3px;}
+  .dim .lbl span:last-child{ color:var(--sun);}
+  .dim .bar{ height:9px; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.2); border-radius:5px; overflow:hidden;}
+  .dim .bar i{ display:block; height:100%; background:var(--sun);}
+  #receipts{ text-align:left; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.15); border-radius:8px; padding:12px 14px; margin-top:10px; max-height:26vh; overflow-y:auto;}
+  #receipts li{ font-size:.76rem; line-height:1.5; margin:0 0 8px 16px; color:var(--paper);}
+  #receipts li b{ color:var(--sun);}
+  .sharecard{ background:var(--paper); color:var(--ink); border-radius:10px; padding:16px; margin:14px auto 0; max-width:340px; box-shadow:0 8px 30px rgba(0,0,0,.5);}
+  .sharecard .big{ font-size:1.35rem; font-weight:700; color:#0b3d5c;}
+  .sharecard .pct{ font-size:2.4rem; font-weight:800; color:var(--sun); -webkit-text-stroke:1px #7a5a10;}
+</style>
+</head>
+<body>
+<div id="skyline">🏚️🏠<span class="tarp">PROJECT NI MAYOR!</span>⛪🏢🏫🌴🏦🛺🏗️🏘️</div>
+<div id="ocean"><div class="wave"></div><div class="wave2"></div><div id="debris">🩴 🗳️ 🐔 📦 🛞 📺</div></div>
+<div id="rain"></div>
+<div id="app"></div>
+<script>
+"use strict";
+/* SAGIP PILIPINAS 2028 — v0.2
+   Bilingual (Tagalog/English). No candidate is ever named; only the tactics are real.
+   Scores the voter on four dimensions: Kamalayan (Awareness), Konsensya (Conscience),
+   Katalinuhan (Critical Thinking), Pagkatao (Character). All receipts documented — see ../RESEARCH.md */
+
+let LANG = "tl";
+const T = (o)=> (typeof o==="string") ? o : o[LANG];
+
+const G = { water:40, i:0, vote:null, seen:new Set(),
+            dims:{ aware:[0,0], conscience:[0,0], intel:[0,0], character:[0,0] } };
+
+const app=document.getElementById("app"), ocean=document.getElementById("ocean"),
+      sky=document.getElementById("skyline");
+const draw=(calm)=>{
+  const w = calm!==undefined ? calm : Math.max(5,Math.min(100,G.water));
+  const h = Math.round(6 + w*0.72);              /* flood height, % of screen */
+  const sink = Math.round(4 + w*0.52);           /* how deep the barangay sits */
+  ocean.style.height = h+"%";
+  sky.style.bottom = `calc(${h}% - ${sink}px)`;  /* rooftops ride the waterline */
+  document.body.classList.toggle("storm", (calm===undefined) && G.water>=60);
+};
+
+function floodLabel(){
+  const w=G.water;
+  if(w<=25) return {tl:"tuyo pa ang tsinelas",en:"slippers still dry"};
+  if(w<=40) return {tl:"hanggang bukung-bukong",en:"ankle-deep"};
+  if(w<=55) return {tl:"hanggang tuhod",en:"knee-deep"};
+  if(w<=70) return {tl:"hanggang bewang",en:"waist-deep"};
+  if(w<=82) return {tl:"hanggang dibdib",en:"chest-deep"};
+  if(w<=90) return {tl:"hanggang leeg",en:"neck-deep"};
+  return {tl:"lagpas-tao na",en:"over our heads"};
+}
+
+const TICKER=[
+ {tl:"📻 BREAKING: Ribbon ng bagong flood control project, unang biktima ng baha.",en:"📻 BREAKING: New flood-control project's ribbon is the flood's first casualty."},
+ {tl:"📻 Survey: 98% ng mga survey, sang-ayon sa survey.",en:"📻 Survey: 98% of surveys agree with the survey."},
+ {tl:"📻 Senador, na-late sa pagdinig — na-traffic sa sariling motorcade.",en:"📻 Senator late for hearing — stuck in traffic behind his own motorcade."},
+ {tl:"📻 Pastor nag-anunsyo ng himala: dumoble ang tithes, naglaho ang audit.",en:"📻 Pastor announces miracle: tithes doubled, the audit vanished."},
+ {tl:"📻 Bagong world record ng bansa: pinakamahabang pila — sa ayuda, hindi sa trabaho.",en:"📻 New national world record: longest line — for ayuda, not for jobs."},
+ {tl:"📻 Weather advisory: paparating na bagyo ng fake news. Signal No. 5.",en:"📻 Weather advisory: incoming fake-news typhoon. Signal No. 5."},
+ {tl:"📻 Inilunsad ng artista ang plataporma niya: 'Basta.'",en:"📻 The action star has launched his platform: 'Basta.'"},
+ {tl:"📻 Opisyal na pahayag: ang mapa ay matagal nang may sampung dash.",en:"📻 Official statement: the map has always had ten dashes."},
+ {tl:"📻 Paliwanag ng ekonomista: ang pork ay hindi baboy — pero kayo pa rin ang kinakatay.",en:"📻 Economist explains: pork isn't pig — but you're still the one butchered."},
+ {tl:"📻 Update: ang tulay na pinasinayaan kahapon, muling pasisinayaan bukas.",en:"📻 Update: the bridge inaugurated yesterday will be re-inaugurated tomorrow."},
+ {tl:"📻 Bagong gabinete: pinsan, bayaw, ninong, at isang celebrity chef.",en:"📻 New cabinet: a cousin, a brother-in-law, a godfather, and a celebrity chef."},
+ {tl:"📻 Nadiskubre ng COA: may isang proyektong TOTOO. Iniimbestigahan kung bakit.",en:"📻 COA discovers one project that actually exists. Investigating why."}
+];
+
+const DIMLBL = {
+  aware:{tl:"KAMALAYAN",en:"AWARENESS"}, conscience:{tl:"KONSENSYA",en:"CONSCIENCE"},
+  intel:{tl:"KATALINUHAN",en:"CRITICAL THINKING"}, character:{tl:"PAGKATAO",en:"CHARACTER"} };
+
+const RECEIPTS = {
+  budol:{tl:["Budol / Ayuda bait","Dokumentado noong 2025: sobreng ₱2,000–₱3,225. Dokumentado rin: SEKRETO ang balota — walang sobreng nakakapasok sa booth."],
+         en:["Vote buying (budol)","Documented 2025 envelopes: ₱2,000–₱3,225. Also documented: the ballot is secret — no envelope can follow you into the booth."]},
+  bandwagon:{tl:["Ang Bandwagon","Ang 'sure winner na' ay ginagawang pag-give-up ang paggusto mo. Ang survey ay litrato ng kasalukuyan — hindi balota."],
+         en:["The Bandwagon","'Sure winner' framing converts preference into resignation. A survey is a snapshot of a manipulated present — not a ballot."]},
+  bloc:{tl:["Ang Bloc Vote","May simbahang isang siglo nang namimigay ng sample ballot; sinukat ng peer-reviewed study (2025) ang epekto nito. Sa loob ng booth, hindi ka nito nakikita."],
+         en:["The Bloc Vote","One church has issued sample ballots for a century; a 2025 peer-reviewed study measured its extraordinary effect. Inside the booth, it cannot see you."]},
+  meme:{tl:["Ang Golden-Age Edit","$10 bilyong pandarambong — napatunayan sa korte — ay na-rewrite ng TikTok bilang nostalgia sa loob ng isang henerasyon."],
+         en:["The Golden-Age Edit","A court-established $10-billion plunder was rewritten by TikTok into nostalgia within one generation. 36 years from exile to palace."]},
+  redtag:{tl:["Ang Red Tag","Ruling ng Korte Suprema (2024): ang red-tagging ay paglabag sa karapatan sa buhay. Sandata ito, hindi ebidensya."],
+         en:["The Red Tag","The Supreme Court ruled (2024) that red-tagging violates the right to life. It is a weapon, not evidence."]},
+  mirror:{tl:["Ang Mirror-Charge","Dokumentado: ang imbestigador ng isang trafficker na pastor ay inakusahan mismo ng kidnapping — ang krimen ng inimbestigahan niya."],
+         en:["The Mirror-Charge","Documented: the investigator of a trafficking pastor was herself accused of kidnapping — her target's own crime. Accusation as autobiography."]},
+  martyr:{tl:["Ang Persecution Rally","Kapag kinasuhan: sigaw ng 'persecution,' punuin ang kalsada. Dokumentado noong 2015, 2025, at ngayong 2026 mismo."],
+         en:["The Persecution Rally","When charged: cry persecution, fill the avenue. Documented in 2015, 2025 — and again this very month in 2026."]},
+  wasted:{tl:["Ang 'Sayang ang Boto'","Huling anyo ng bandwagon, hatid pa ng mga mahal mo. Ang botong sinunod ang konsensya ay hindi kailanman nasayang; ang isinuko, palagi."],
+         en:["The 'Wasted Vote'","The bandwagon's final form, delivered by people who love you. A conscience vote is never wasted; a surrendered one always is."]},
+  blind:{tl:["Ang Blind Ballot","Tanggalin ang apelyido at ang survey — at pipiliin ng maraming botante ang rekord na tatanggihan nila kung may pangalan. 'Yang puwang na 'yan ang buong laro."],
+         en:["The Blind Ballot","Strip the surname and the survey, and voters routinely choose the record they'd reject under its brand name. That gap is the whole game."]},
+  seat:{tl:["Ang Dagat","Naging sampu ang siyam na dash habang nakapikit ang isang palasyong 'kaibigan.' Water cannon, laser, harang — dokumentado lahat. Nakatingin ang mapa sa balota."],
+         en:["The Sea","Nine dashes became ten while a friendly palace looked away. Water cannons, lasers, barriers — all documented. The map is watching the ballot."]},
+  hellvote:{tl:["Ang 'Boto o Impiyerno'","Dokumentado ito: sa isang US federal indictment, ang 'eternal damnation' mismo ang nakalistang pananakot na pampasunod. Ang talatang binabanggit sa pulpito, kapag binasa nang buo, ay walang kandidato. Walang Comelec sa langit — at sekreto ang balota."],
+         en:["The 'Vote or Burn'","This is documented: in a US federal indictment, 'eternal damnation' is literally listed as the coercion mechanism. The verse quoted from the pulpit, read in full, contains no candidate. There is no Comelec in heaven — and the ballot is secret."]},
+  trolljob:{tl:["Ang Troll Farm","Dokumentado: kontrata ng isang embahada sa 'keyboard warriors' — ₱930,000 ang tseke. Ang iba, hindi na kailangang bayaran: naniniwala na sila."],
+         en:["The Troll Farm","Documented: an embassy's contract for 'keyboard warriors' — the check was ₱930,000. Others don't even need paying: they already believe."]},
+  jailrun2:{tl:["Ang Kandidato sa Selda","Dokumentado: isang pastor sa FBI Most Wanted list — trafficking ng mga bata — ang tumakbo sa Senado mula sa kulungan, at humingi pa ng recount. Ang 'persecution' ay hindi depensa sa indictment."],
+         en:["The Candidate in a Cell","Documented: a pastor on the FBI Most Wanted list — child trafficking — ran for Senate from jail, then demanded a recount. 'Persecution' is not a defense to an indictment."]},
+  rally:{tl:["Ang Rally Para sa Akusado","Dokumentado ngayong 2026 mismo: dalawang araw na rally habang isinasampa ang plunder case sa senador ng simbahan. Ang hustisya ay nasa korte, hindi sa headcount."],
+         en:["The Rally for the Accused","Documented this very year, 2026: a two-day rally as the plunder case was filed against the church's senator. Justice lives in a courtroom, not a headcount."]},
+  ghost:{tl:["Ang Ghost Project","Dokumentado: ₱42–118 BILYON kada taon ang nawawala sa flood control. May senador nang naaresto sa isang ₱92.8M na proyektong multo. 100% disbursed, 0% built — ang tanging natapos ay ang ribbon."],
+         en:["The Ghost Project","Documented: ₱42–118 BILLION lost yearly to flood-control corruption. A senator has been arrested over one ₱92.8M ghost project. 100% disbursed, 0% built — the only thing finished was the ribbon."]},
+  dynasty:{tl:["Ang Palit-Upuan","Dokumentado: 80% ng Kamara, 71 sa 82 gobernador, 113 sa 149 mayor — mga dinastiya. Ang term limit ay para sa upuan, hindi sa pamilya."],
+         en:["The Seat-Swap","Documented: 80% of the House, 71 of 82 governors, 113 of 149 mayors — dynasties. Term limits limit terms, not families."]},
+  balimbing:{tl:["Ang Balimbing","Pagkatapos ng bawat halalan, lumilipat ang mga pulitiko sa partido ng nanalo. Ang partido ay panahon lang sa kanila. Ang boto mo ang tanging permanente."],
+         en:["The Turncoat","After every election, politicians migrate to the winner's party. To them, parties are weather. Your vote is the only permanent thing in the system."]},
+  icc:{tl:["Ang Aresto","Dokumentado sa sinumpaang testimonya: may reward kada patay. 6,000 hanggang 30,000 ang namatay. Ang 'disiplina' na may piso kada bangkay ay hindi disiplina — negosyo. May korte na ngayong nagbabasa ng resibo."],
+         en:["The Arrest","Documented in sworn testimony: a cash reward per kill. 6,000 to 30,000 dead. 'Discipline' with a price per body is not discipline — it's a business. A court is now reading the receipts."]},
+  nihilism:{tl:["Ang 'Lahat Naman Corrupt'","Ito ang paboritong linya ng pinaka-corrupt: kapag naniwala kang pare-pareho lahat, hindi mo na sila pagbobotohan ng maayos — at 'yun mismo ang plano. Ang manufactured na pagkadismaya ay taktika rin."],
+         en:["The 'They're All Corrupt'","This is the most corrupt player's favorite line: once you believe they're all the same, you stop choosing carefully — which was the entire point. Manufactured cynicism is also a tactic."]},
+  sleeper:{tl:["Ang Bagong Mukha","Dokumentado: isang mayor na walang nakakaalalang kaklase, kaduda-dudang birth certificate, at scam compound sa likod-bahay. Life sentence ang kinahinatnan. Itanong kung saan galing ang pera — bago bumoto, hindi pagkatapos."],
+         en:["The New Face","Documented: a mayor no classmate remembered, a doubtful birth certificate, and a scam compound out back. It ended in a life sentence. Ask where the money comes from — before voting, not after."]},
+  artista:{tl:["Ang Artista sa Balota","Ang katanyagan ay produkto ng studio, hindi kwalipikasyon. Sa Senado, ang script ay ang pambansang budget — at walang stunt double ang botante kapag pumalpak ang bida."],
+         en:["The Actor on the Ballot","Fame is a studio product, not a qualification. In the Senate, the script is the national budget — and the voter has no stunt double when the leading man flops."]},
+  lawlist:{tl:["Ang 'Walang Ginawa'","Ang mga batas ay walang tarpaulin na may mukha. Maternity leave, mental health law, batas laban sa online child abuse — may-akda lahat 'yan. Ang 'walang ginawa' ay kadalasang ibig sabihin: 'walang pa-picture.'"],
+         en:["The 'She's Done Nothing'","Laws don't get tarpaulins with faces. Maternity leave, the mental health act, the anti-online-child-abuse law — all had an author. 'Did nothing' usually means 'took no selfies.'"]},
+  epal:{tl:["Ang Epal","Pera mo ang gumawa ng tulay; mukha niya ang nasa tarpaulin. Ang pangalan sa proyekto ay hindi resibo ng trabaho — resibo ng ambisyon."],
+         en:["The Epal","Your taxes built the bridge; his face is on the tarpaulin. A name on a project is not a receipt of work — it's a receipt of ambition."]},
+  celeb:{tl:["Ang Celebrity Endorsement","Ang sikat ay hindi kwalipikasyon. Ang pagiging kilala ay produkto ng media machine — at alam ng machine kung kanino ka nito ibebenta."],
+         en:["The Celebrity Endorsement","Fame is not a qualification. Recall is a product of the media machine — and the machine knows exactly who it's selling you to."]}
+};
+
+/* vignettes: dim = scored dimension; each choice: [text{tl,en}, {w:water, p:points(0-2), rec}] */
+const V = [
+{dim:null, tag:{tl:"OKTUBRE 2027 — ANG SIMULA",en:"OCTOBER 2027 — THE BEGINNING"},
+ body:{tl:"Ikaw si Juan/Juana dela Cruz. Isang boto. Sabi nila maliit 'yan. Kaya nga nila binibili.",
+       en:"You are Juan/Juana dela Cruz. One vote. They say it's small. That's exactly why they're buying it."},
+ quote:{tl:"“Ang pinakamakapangyarihang tao sa Republika — sa loob ng isang araw, bawat tatlong taon. Kung gising.”",
+        en:"“The most powerful person in the Republic — for one day, every three years. If awake.”"},
+ ch:[[{tl:"Handa ako. Simulan natin.",en:"I'm ready. Let's begin."},{w:0,p:0}]]},
+
+{dim:"conscience", tag:{tl:"ANG SOBRE",en:"THE ENVELOPE"},
+ body:{tl:"Sa covered court, may nag-aabot ng sobre: ₱3,000, 'ayuda' daw. May sample ballot sa loob. Nakatingin ang kapitbahay mo. At oo — kailangan mo talaga ng ₱3,000.",
+       en:"At the covered court, someone hands you an envelope: ₱3,000, 'aid,' they say. A sample ballot is inside. Your neighbor is watching. And yes — you genuinely need ₱3,000."},
+ ch:[[{tl:"Tanggapin at iboto sila. Utang na loob 'yan.",en:"Take it and vote for them. That's a debt of gratitude."},{w:9,p:0,rec:"budol"}],
+     [{tl:"Tanggapin — pero sekreto ang balota. Walang makakaalam.",en:"Take it — but the ballot is secret. No one will ever know."},{w:2,p:1,rec:"budol"}],
+     [{tl:"Tanggihan nang tahimik.",en:"Quietly decline."},{w:-2,p:2,rec:"budol"}]]},
+
+{dim:"intel", tag:{tl:"ANG SURVEY",en:"THE SURVEY"},
+ body:{tl:"Trending: 'SURE WINNER na si Kandidato A — 51% laban 41%!' Ang gusto mo sanang iboto, si Kandidato B, kulelat. Sabi ng kaklase mo: 'Sayang boto mo, dre.'",
+       en:"Trending: 'Candidate A is a SURE WINNER — 51% vs 41%!' The one you actually prefer, Candidate B, is trailing. Your classmate says: 'You're wasting your vote.'"},
+ ch:[[{tl:"Totoo naman. Lumipat na sa siguradong panalo.",en:"Fair enough. Switch to the sure winner."},{w:9,p:0,rec:"bandwagon"}],
+     [{tl:"Ang survey ay litrato, hindi balota. Tuloy ako.",en:"A survey is a photograph, not a ballot. I'm staying."},{w:-3,p:2,rec:"bandwagon"}],
+     [{tl:"Hindi na lang ako boboto.",en:"I just won't vote."},{w:7,p:0,rec:"bandwagon"}]]},
+
+{dim:"character", tag:{tl:"ANG SAMPLE BALLOT",en:"THE SAMPLE BALLOT"},
+ body:{tl:"Miyembro ka ng malaking simbahan. Dumating ang sample ballot — buo na, pinili na para sa'yo. Sabi ng deacon: pagkakaisa. Sabi ng lola mo: baka ma-tiwalag kayo.",
+       en:"You belong to a large church. The sample ballot arrives — complete, chosen for you. The deacon says: unity. Your grandmother says: we could be expelled."},
+ ch:[[{tl:"Sundin ito. Kapayapaan sa pamilya.",en:"Follow it. Peace in the family."},{w:8,p:0,rec:"bloc"}],
+     [{tl:"Ngumiti, tumango — pero walang deacon sa loob ng booth.",en:"Smile, nod — but there is no deacon inside the booth."},{w:-3,p:2,rec:"bloc"}]]},
+
+{dim:"conscience", tag:{tl:"ANG SERMON",en:"THE SERMON"},
+ body:{tl:"Linggo. Mula sa pulpito: 'Nasusulat — sumunod kayo sa mga namumuno sa inyo. Ang kandidatong ito ang pinili ng Diyos. Ang susuway sa balota ay sumusuway sa Diyos — at alam ninyo kung saan nauuwi ang suwail.' Tahimik ang kapilya. Katabi mo ang buong pamilya mo. May listahan ang usher.",
+       en:"Sunday. From the pulpit: 'It is written — obey those who rule over you. This candidate is God's chosen. To defy the ballot is to defy God — and you know where the disobedient end up.' The chapel is silent. Your whole family sits beside you. The usher has a list."},
+ quote:{tl:"Ang buong talata, kapag ikaw mismo ang bumasa: tungkol sa pananampalataya. Walang kandidato. Walang balota. Walang apoy na nakalaan sa botante.",
+        en:"The full passage, when you read it yourself: it is about faith. No candidate. No ballot. No fire reserved for voters."},
+ ch:[[{tl:"Susunod ako. Ayokong masunog sa impiyerno.",en:"I will obey. I don't want to burn in hell."},{w:9,p:0,rec:"hellvote"}],
+     [{tl:"Sasama ako sa simbahan sa lahat ng bagay — pero sa loob ng booth, ako at ang Diyos lang ang nakakaalam.",en:"I'll stand with my church in everything — but inside the booth, only God and I will know."},{w:-2,p:1,rec:"hellvote"}],
+     [{tl:"Babasahin ko ang buong kabanata pagkauwi. Kung takot ang kailangan para makuha ang boto mo — hindi Diyos ang humihingi nito.",en:"I'll read the whole chapter when I get home. If it takes fear to collect your vote — it isn't God doing the collecting."},{w:-4,p:2,rec:"hellvote"}]]},
+
+{dim:"intel", tag:{tl:"ANG TIKTOK EDIT",en:"THE TIKTOK EDIT"},
+ body:{tl:"Viral: gintong lungsod, disiplinadong lansangan, malungkot na piano. Caption: 'Ibalik ang Ginintuang Panahon.' Ang ganda ng edit. Ang alaala ng lolo mo tungkol sa panahong 'yon: hindi ganyan.",
+       en:"Viral: a golden city, disciplined streets, sad piano. Caption: 'Bring back the Golden Age.' Beautiful edit. Your grandfather's memory of that era: not that."},
+ ch:[[{tl:"I-share. Nakaka-proud naman.",en:"Share it. It does make you proud."},{w:8,p:0,rec:"meme"}],
+     [{tl:"Tanungin muna si Lolo. Tapos ang mga resibo.",en:"Ask Grandfather first. Then check the receipts."},{w:-3,p:2,rec:"meme"}]]},
+
+{dim:"aware", tag:{tl:"ANG TARPAULIN",en:"THE TARPAULIN"},
+ body:{tl:"May bagong tulay sa bayan. Sa gitna ng tulay: tarpaulin na mas malaki pa sa tulay, mukha ng pulitiko, at ang salitang 'PROJECT NI...' Pera mo ang nagpagawa niyan.",
+       en:"Your town has a new bridge. In the middle of it: a tarpaulin larger than the bridge, a politician's face, and the words 'A PROJECT OF...' Your taxes built that."},
+ ch:[[{tl:"Mabait siya — may ginagawa siya para sa atin!",en:"He's good — look, he does things for us!"},{w:7,p:0,rec:"epal"}],
+     [{tl:"Trabaho niya 'yan, hindi regalo niya. At pera natin 'yan.",en:"That's his job, not his gift. And that's our money."},{w:-3,p:2,rec:"epal"}]]},
+
+{dim:"aware", tag:{tl:"BLIND TEST — UNANG ROUND: ANG DAGAT",en:"BLIND TEST — ROUND 1: THE SEA"},
+ body:{tl:"Alisin natin ang mga pangalan. Dalawang kandidato, isang tanong: 'Ano ang gagawin mo sa karagatang atin ayon sa international ruling?'",
+       en:"Let's remove the names. Two candidates, one question: 'What will you do about the waters that are ours by international ruling?'"},
+ quote:{tl:"A: “Huwag nating galitin ang malaking kaibigan. Isantabi muna ang ruling.”  B: “Atin 'yon — panalo tayo sa korte ng mundo. Ipagtatanggol ko ito nang hindi tayo napapasok sa giyera.”",
+        en:"A: “Let's not anger the big friend. Set the ruling aside for now.”  B: “It is ours — we won in the world's court. I will defend it without walking us into a war.”"},
+ ch:[[{tl:"Si A ang tama.",en:"A is right."},{w:8,p:0,rec:"seat"}],
+     [{tl:"Si B ang tama.",en:"B is right."},{w:-4,p:2,rec:"seat"}]]},
+
+{dim:"aware", tag:{tl:"BLIND TEST — IKALAWANG ROUND: ANG REKORD",en:"BLIND TEST — ROUND 2: THE RECORD"},
+ body:{tl:"Mga rekord, walang pangalan. A: kilalang apelyido; mainit sa TV; ₱125M na 'confidential funds' na naubos sa 11 araw; tahimik tuwing may binabangga sa dagat. B: may-akda ng mga batas sa maternity leave, mental health, at laban sa online child abuse; nag-imbestiga sa isang pastor na trafficker at sa mga scam hub.",
+       en:"Records, no names. A: famous surname; warm on TV; ₱125M in 'confidential funds' spent in 11 days; silent whenever our boats are rammed. B: authored the maternity leave, mental health, and anti-online-child-abuse laws; investigated a trafficking pastor and the scam hubs."},
+ ch:[[{tl:"Mas kapani-paniwala ang rekord ni A.",en:"A's record is more convincing."},{w:8,p:0,rec:"blind"}],
+     [{tl:"Mas kapani-paniwala ang rekord ni B.",en:"B's record is more convincing."},{w:-4,p:2,rec:"blind"}]]},
+
+{dim:"intel", tag:{tl:"BLIND TEST — HULING ROUND: ANG AKUSASYON",en:"BLIND TEST — FINAL ROUND: THE ACCUSATION"},
+ body:{tl:"Paano sila sumagot sa akusasyon? A: hindi sumipot sa pagdinig; nagpa-rally ang simbahan; 'political persecution' daw lahat. B: dumating na may mga dokumento; kinasuhan ng mismong krimen ng inimbestigahan niya; naghain ng kaso — at naghintay sa korte.",
+       en:"How did each answer accusations? A: skipped the hearings; the church rallied in the streets; called it all 'political persecution.' B: showed up with documents; was counter-charged with her own investigation's crime; filed a case — and waited for the court."},
+ ch:[[{tl:"Kawawa si A — pinag-iinitan talaga.",en:"Poor A — clearly being persecuted."},{w:8,p:0,rec:"martyr"}],
+     [{tl:"Ang taong may resibo ay hindi nagtatago sa rally.",en:"People with receipts don't hide behind rallies."},{w:-4,p:2,rec:"martyr"}]]},
+
+{dim:"aware", tag:{tl:"ANG RED-TAG POST",en:"THE RED-TAG POST"},
+ body:{tl:"May kumakalat: si Kandidato B daw ay 'kaanib ng mga rebelde.' Walang ebidensya, pero libo na ang share. Komento ng isa: 'Kaya pala mahilig sa human rights.'",
+       en:"A post spreads: Candidate B is 'linked to the rebels.' No evidence, thousands of shares. One comment: 'No wonder she's so into human rights.'"},
+ ch:[[{tl:"Walang usok kung walang apoy.",en:"No smoke without fire."},{w:7,p:0,rec:"redtag"}],
+     [{tl:"Ang red-tag ay sandata, hindi ebidensya — ruling na 'yan ng Korte Suprema.",en:"A red tag is a weapon, not evidence — the Supreme Court itself ruled so."},{w:-3,p:2,rec:"redtag"}]]},
+
+{dim:"intel", tag:{tl:"ANG CELEBRITY",en:"THE CELEBRITY"},
+ body:{tl:"Ang paborito mong action star, sumigaw sa entablado: 'Si Kandidato A ang para sa mahirap!' Ang sigaw ng crowd, parang kampyonato. Hindi mo maalala kung ano na nga ba ang nagawa ni A para sa mahirap.",
+       en:"Your favorite action star shouts from the stage: 'Candidate A is for the poor!' The crowd roars like it's a title fight. You can't actually recall what A has ever done for the poor."},
+ ch:[[{tl:"Kung kay Idol siya, sa akin din.",en:"If my idol's for him, so am I."},{w:7,p:0,rec:"celeb"}],
+     [{tl:"Ang sikat ay hindi kwalipikasyon. Hanapin ang rekord, hindi ang palakpak.",en:"Fame is not a qualification. Find the record, not the applause."},{w:-3,p:2,rec:"celeb"}]]},
+
+{dim:"character", tag:{tl:"HAPUNAN SA BAHAY",en:"DINNER AT HOME"},
+ body:{tl:"Sabi ng tatay mo — mahal ka niya: 'Anak, alam kong gusto mo si B. Pero talo na 'yan sabi ng survey. Sayang ang boto. Isipin mo ang pamilya.'",
+       en:"Your father — who loves you — says: 'Anak, I know you like B. But the surveys say it's over. Don't waste your vote. Think of the family.'"},
+ ch:[[{tl:"Tama si Tatay. Praktikal na lang.",en:"Father's right. Be practical."},{w:8,p:0,rec:"wasted"}],
+     [{tl:"Mahal ko si Tatay — pero sekreto ang balota, kahit sa hapag-kainan.",en:"I love my father — but the ballot is secret, even at the dinner table."},{w:-3,p:2,rec:"wasted"}]]},
+
+{dim:"conscience", tag:{tl:"ANG JOB OFFER",en:"THE JOB OFFER"},
+ body:{tl:"Chat ng pinsan mo: '₱800 kada araw, work from home! Mag-post ka lang ng maganda tungkol kay Kandidato A at ng masama sa kalaban. Social Media Specialist ang title. May quota lang: 30 comments, 10 share, isang konsensya.'",
+       en:"Your cousin texts: '₱800 a day, work from home! Just post nice things about Candidate A and nasty things about the rival. Title: Social Media Specialist. Small quota: 30 comments, 10 shares, one conscience.'"},
+ ch:[[{tl:"Sige — trabaho 'yan, hindi pulitika.",en:"Fine — it's a job, not politics."},{w:8,p:0,rec:"trolljob"}],
+     [{tl:"Hindi ako papasok — pero hahayaan ko na lang sila.",en:"Not for me — but I'll let them be."},{w:2,p:1,rec:"trolljob"}],
+     [{tl:"Tanggihan — at sabihan ang tropa kung paano makilala ang mga 'specialist.'",en:"Decline — and teach the barkada how to spot the 'specialists.'"},{w:-3,p:2,rec:"trolljob"}]]},
+
+{dim:"aware", tag:{tl:"ANG KANDIDATO SA SELDA",en:"THE CANDIDATE IN A CELL"},
+ body:{tl:"May kandidato sa Senado na nakakulong dahil sa trafficking ng mga bata — kasama sa Most Wanted list ng ibang bansa. Sabi ng supporters: 'Persecuted siya, parang si Kristo.' Nasa balota pa rin ang pangalan niya, maayos ang pagkaka-print.",
+       en:"A Senate candidate is in jail for child trafficking — on another country's Most Wanted list. His supporters say: 'He is persecuted, like Christ.' His name is still on the ballot, beautifully printed."},
+ ch:[[{tl:"Isama sa 12 — kawawa naman, inaapi siya.",en:"Put him in my 12 — poor man, he's being persecuted."},{w:8,p:0,rec:"jailrun2"}],
+     [{tl:"Ang taong hinahanap ng FBI ay hindi biktima ng chismis.",en:"A man wanted by the FBI is not a victim of gossip."},{w:-3,p:2,rec:"jailrun2"}]]},
+
+{dim:"character", tag:{tl:"ANG BUS PAPUNTANG RALLY",en:"THE BUS TO THE RALLY"},
+ body:{tl:"Kinasuhan ng plunder — non-bailable — ang senador ng simbahan ninyo. May nakahandang bus papuntang 'Prayer Rally for Justice.' May attendance sheet. Sabi ng kapatid mo: 'Field trip lang 'to na may spiritual dimension.'",
+       en:"Your church's senator has been charged with plunder — non-bailable. A bus is ready for the 'Prayer Rally for Justice.' There is an attendance sheet. Your sibling says: 'It's just a field trip with a spiritual dimension.'"},
+ ch:[[{tl:"Sumakay. Mahirap nang ma-absent.",en:"Get on the bus. Being absent is dangerous."},{w:8,p:0,rec:"rally"}],
+     [{tl:"Biglang sumakit ang tiyan. Sayang.",en:"Sudden stomach ache. Such a shame."},{w:0,p:1,rec:"rally"}],
+     [{tl:"Ang hustisya ay nasa korte, hindi sa headcount.",en:"Justice lives in a courtroom, not a headcount."},{w:-3,p:2,rec:"rally"}]]},
+
+{dim:"aware", tag:{tl:"ANG FLOOD CONTROL",en:"THE FLOOD CONTROL"},
+ body:{tl:"Baha na naman hanggang bewang. Pero ayon sa opisyal na records, TAPOS na ang flood control project sa inyo — dalawang beses pa itong na-ribbon-cutting, may fireworks pa ang ikalawa. Ngayon, pangako ni Kandidato A: 'MAS MARAMING flood control!'",
+       en:"Waist-deep floods again. But according to official records, your flood-control project is FINISHED — it had two ribbon-cuttings, the second one with fireworks. Now Candidate A promises: 'MORE flood control!'"},
+ ch:[[{tl:"Sana nga. Baka this time, totoo na.",en:"Here's hoping. Maybe this time it's real."},{w:7,p:0,rec:"ghost"}],
+     [{tl:"100% disbursed, 0% built. Ang tanging natapos ay ang ribbon. Hanapin ang lumagda.",en:"100% disbursed, 0% built. Only the ribbon got finished. Find who signed."},{w:-3,p:2,rec:"ghost"}]]},
+
+{dim:"intel", tag:{tl:"ANG PALIT-UPUAN",en:"THE SEAT-SWAP"},
+ body:{tl:"Term limit na ni Mayor. Solusyon: si Misis ang tatakbong mayor, si Junior ang vice, si Ate ang congresswoman, si Kuya ang board member. Tarpaulin: 'BAGONG MUKHA, BAGONG PAG-ASA!' Parehong apelyido. Bagong gupit lang.",
+       en:"The Mayor is termed out. Solution: the wife runs for mayor, Junior for vice, Big Sister for congresswoman, Big Brother for the board. Tarpaulin: 'NEW FACES, NEW HOPE!' Same surname. New haircuts."},
+ ch:[[{tl:"Buti nga — may experience na ang buong pamilya.",en:"Good, actually — the whole family has experience now."},{w:7,p:0,rec:"dynasty"}],
+     [{tl:"Hindi 'yan demokrasya. HR department 'yan ng iisang angkan.",en:"That's not democracy. That's one clan's HR department."},{w:-3,p:2,rec:"dynasty"}]]},
+
+{dim:"intel", tag:{tl:"ANG BALIMBING",en:"THE TURNCOAT"},
+ body:{tl:"Ang congressman ninyo, lumipat na naman ng partido — pangatlong beses sa anim na taon, laging papunta sa nanalo. Sabi niya sa press con: 'Matter of principle po ito.' Ang prinsipyo niya: manalo.",
+       en:"Your congressman has switched parties again — third time in six years, always toward the winner. At the press con he says: 'This is a matter of principle.' His principle: winning."},
+ ch:[[{tl:"Ganyan talaga ang laro. Practical siya.",en:"That's just the game. He's practical."},{w:6,p:0,rec:"balimbing"}],
+     [{tl:"Ang partido ay panahon lang sa kanila. Ang boto ko ang tanging permanente.",en:"To them, parties are weather. My vote is the only permanent thing here."},{w:-2,p:2,rec:"balimbing"}]]},
+
+{dim:"character", tag:{tl:"ANG ARESTO",en:"THE ARREST"},
+ body:{tl:"Inaresto ang isang dating pangulo — libu-libo ang napatay sa kanyang 'gera.' Sabi ng kapitbahay mo: 'Disiplina 'yon! Wala tayong pakialam sa dayuhang korte!' Ang nanay ng isang napatay, tahimik lang: sampung taon na siyang hindi nakakatulog nang diretso.",
+       en:"A former president is arrested — thousands died in his 'war.' Your neighbor says: 'That was discipline! Foreign courts should mind their business!' The mother of one of the dead says nothing: she hasn't slept a whole night in ten years."},
+ ch:[[{tl:"Bayani pa rin siya para sa akin.",en:"He's still a hero to me."},{w:8,p:0,rec:"icc"}],
+     [{tl:"May sinumpaang testimonya: may presyo kada bangkay. Ang may resibo kada patay ay hindi bayani.",en:"There's sworn testimony: a price per body. A man with receipts per corpse is not a hero."},{w:-4,p:2,rec:"icc"}]]},
+
+{dim:"intel", tag:{tl:"ANG GROUP CHAT",en:"THE GROUP CHAT"},
+ body:{tl:"Sabi sa GC: 'Trapo naman silang lahat. Lesser evil na lang. Pumili ka ng magaling mag-pagawa ng kalsada.' Napaisip ka: kung talagang pare-pareho lahat, bakit iisang kampo lang ang may apatnapu't-limang dokumentadong taktika?",
+       en:"The group chat says: 'They're all trapos anyway. Just pick the lesser evil. Choose whoever builds roads.' You pause: if they're truly all the same, why does only one camp have forty-five documented tactics?"},
+ ch:[[{tl:"Tama sila. Walang pinagkaiba, bakit pa mag-abala.",en:"They're right. No difference, why bother."},{w:7,p:0,rec:"nihilism"}],
+     [{tl:"Ang 'lahat corrupt' ay linya mismo ng pinaka-corrupt. Kapag pinaniwalaan ko, panalo sila.",en:"'They're all corrupt' is the most corrupt player's own line. The moment I believe it, they win."},{w:-3,p:2,rec:"nihilism"}]]},
+
+{dim:"aware", tag:{tl:"ANG BAGONG MUKHA SA BAYAN",en:"THE NEW FACE IN TOWN"},
+ body:{tl:"May bagong kandidatong mayor sa kabilang bayan: walang kaklaseng nakakaalala sa kanya, kakaiba ang birth certificate, at ang campaign fund — mas malaki pa sa buong budget ng bayan. Pero ang gaganda ng mga basketball court na donasyon niya. May scoreboard pa.",
+       en:"The next town has a new mayoral candidate: no classmate remembers her, the birth certificate is odd, and the campaign fund is bigger than the town's entire budget. But her donated basketball courts are gorgeous. With scoreboards."},
+ ch:[[{tl:"Basta may binibigay, panalo sa akin.",en:"If she's giving things away, she's got my vote."},{w:7,p:0,rec:"sleeper"}],
+     [{tl:"May bayan nang nadale sa ganyan — life sentence ang ending. Itanong muna kung saan galing ang pera.",en:"A town already fell for this — it ended in a life sentence. Ask where the money comes from first."},{w:-3,p:2,rec:"sleeper"}]]},
+
+{dim:"aware", tag:{tl:"ANG ARTISTA SA BALOTA",en:"THE ACTOR ON THE BALLOT"},
+ body:{tl:"Tumakbo sa Senado ang sikat na action star. Plataporma: ang catchphrase niya sa pelikula. Sa rally: sumayaw, nag-shadow boxing, namigay ng basketball, nag-selfie sa lahat. Sa debate: hindi dumating — 'may taping po.' Nangunguna siya sa survey.",
+       en:"The famous action star is running for Senate. Platform: his movie catchphrase. At rallies: he dances, shadow-boxes, gives away basketballs, takes selfies with everyone. At the debate: absent — 'he had a taping.' He leads the surveys."},
+ ch:[[{tl:"Iboto — kilala ko siya, mabait sa mga fans, at nakakatawa.",en:"Vote for him — I know him, he's nice to fans, and he's funny."},{w:8,p:0,rec:"artista"}],
+     [{tl:"Fans' day ang alam niya, hindi budget hearing. Ang Senado ay trabaho, hindi encore.",en:"He knows fans' days, not budget hearings. The Senate is a job, not an encore."},{w:-3,p:2,rec:"artista"}]]},
+
+{dim:"intel", tag:{tl:"ANG 'WALANG GINAWA'",en:"THE 'DID NOTHING'"},
+ body:{tl:"Sabi ng kaibigan mo: 'Si Kandidato B? Walang ginawa 'yan.' Limang segundong Google: batas sa maternity leave, mental health law, batas laban sa online child abuse, imbestigasyon sa trafficker na pastor at sa mga scam hub. Ang mga batas kasi, walang tarpaulin na may mukha.",
+       en:"Your friend says: 'Candidate B? She's done nothing.' A five-second Google: the maternity leave law, the mental health act, the anti-online-child-abuse law, the investigations into a trafficking pastor and the scam hubs. Laws just don't get tarpaulins with faces."},
+ ch:[[{tl:"Kung may nagawa siya, dapat alam ko. Kasalanan niya kung hindi sikat.",en:"If she'd done anything, I'd know. Her fault for not being famous."},{w:6,p:0,rec:"lawlist"}],
+     [{tl:"Hindi tarpaulin ang sukatan ng trabaho. Record ang binabasa, hindi recall.",en:"Work isn't measured in tarpaulins. You read the record, not the recall."},{w:-2,p:2,rec:"lawlist"}]]},
+
+{dim:null, vote:true, tag:{tl:"MAYO 9, 2028 — ARAW NG HALALAN",en:"MAY 9, 2028 — ELECTION DAY"},
+ body:{tl:"Mahaba ang pila, mainit ang araw. Sa loob ng booth: ikaw lang, ang balpen, at ang bansa. Walang deacon. Walang sobre. Walang survey. Walang tatay mo. Ito na 'yon.",
+       en:"The line is long, the sun is hot. Inside the booth: just you, the pen, and the country. No deacon. No envelope. No survey. No father. This is it."},
+ ch:[[{tl:"IBOTO SI KANDIDATO A",en:"VOTE CANDIDATE A"},{vote:"A"}],
+     [{tl:"IBOTO SI KANDIDATO B",en:"VOTE CANDIDATE B"},{vote:"B"}],
+     [{tl:"Iwanang blanko.",en:"Leave it blank."},{vote:"X"}]]}
+];
+
+const FUT = {
+ sink:{tl:[["2028","Panalo si Kandidato A. Fireworks sa arena — pinakamalaki sa kasaysayan. Walang headline na may salitang 'bakit.'"],
+  ["2029","May bagong dash ang mapa nila. Sabi ng Palasyo, matagal na raw 'yon. Sabi ng mangingisda, wala na siyang mapuntahan."],
+  ["2030","Namatay sa komite ang prangkisa ng huling kritikal na network. Ang natirang balita: fireworks."],
+  ["2031","Na-red-tag ang pinsan mong guro dahil sa isang post. Nag-resign. Nag-abroad. Hindi na bumalik."],
+  ["2032","₱180 na ang bigas. May bagong world record: pinakamalaking gospel choir. Ang mga nurse: nasa ibang bansa na lahat."],
+  ["2033","Kinasuhan ang huling senador na nag-iimbestiga — ng mismong krimen ng kanyang inimbestigahan."],
+  ["2034","Tahimik na. 'Maayos na ang lahat,' sabi ng lahat ng channel. Iisa na kasi ang may-ari. LUMUBOG."]],
+  en:[["2028","Candidate A wins. Fireworks over the arena — largest in history. No headline contains the word 'why.'"],
+  ["2029","Their map grows a new dash. The Palace says it was always there. The fisherman says he has nowhere left."],
+  ["2030","The last critical network's franchise dies in committee. The remaining news: fireworks."],
+  ["2031","Your cousin the teacher is red-tagged over one post. Resigns. Goes abroad. Never comes back."],
+  ["2032","Rice is ₱180. A new world record: the largest gospel choir. The nurses are all in other countries now."],
+  ["2033","The last investigating senator is charged — with the very crime she was investigating."],
+  ["2034","It's quiet now. 'Everything is fine,' say all the channels. They share one owner. THE COUNTRY SANK."]]},
+ swim:{tl:[["2028","Panalo si Kandidato B — kinabahan ang buong mundo sa bilangan. Umiyak ang tatay mo. Hindi dahil sa talo."],
+  ["2029","Mahirap ang unang taon. Hinarang ng mga dinastiya ang kalahati ng reporma. Pero ang flood control — 100% built na, hindi lang 100% disbursed."],
+  ["2030","Bumalik sa ere ang network. Unang gabi: dokumentaryo tungkol sa mga sobre. Kinabukasan, galit ang lahat. Mabuti 'yon."],
+  ["2031","Na-convict ang unang heneral ng Listahan. Umiyak ang mga nanay sa korte. Naririnig na sila."],
+  ["2032","May patrol na ulit sa shoal. May dash pa rin sa mapa nila — pero may bangka na ulit ang mangingisda natin."],
+  ["2033","Bumagsak ang rating ni B. Ang totoo: hindi siya sikat — matigas ang batas sa mga pinsan ng lahat. Panalo pa rin ang batas."],
+  ["2034","Hindi ito paraiso. May trapik, may baha, may trapo pa rin. Pero may bili pa rin ang boto mo sa susunod — dahil hindi mo ito ibinenta noong nakaraan. LUMANGOY."]],
+  en:[["2028","Candidate B wins — the whole world holds its breath through the count. Your father cries. Not because of a loss."],
+  ["2029","Year one is hard. The dynasties block half the reforms. But the flood control is 100% BUILT now, not just 100% disbursed."],
+  ["2030","The network is back on air. First night: a documentary about the envelopes. Next morning, everyone is furious. Good."],
+  ["2031","The first general of the List is convicted. The mothers cry in the courtroom. They are finally heard."],
+  ["2032","Patrols return to the shoal. Their map still has its dashes — but our fisherman has his boat again."],
+  ["2033","B's ratings fall. Truth is, she isn't popular — the law is hard on everyone's cousins. The law is winning anyway."],
+  ["2034","It isn't paradise. Still traffic, still floods, still trapos. But your vote will still be worth something next time — because you didn't sell it last time. THE COUNTRY SWAM."]]},
+ early:{tl:[["Pebrero 2028","Nilunok mo ang lahat: ang sobre, ang survey, ang sermon, ang artista, ang 'lahat naman corrupt.' Wala nang natirang harang."],
+  ["Marso 2028","Lumagpas-tao ang baha bago pa dumating ang Mayo. Balita: may eleksyon pa rin daw — sa mga bayang hindi pa lubog."],
+  ["Mayo 9, 2028","Natuloy nga ang halalan. Wala ka na doon. LUMUBOG — hindi man lang inabot ang balota mo."]],
+  en:[["February 2028","You swallowed everything: the envelope, the survey, the sermon, the action star, the 'they're all corrupt.' No barriers left."],
+  ["March 2028","The flood went over our heads before May could even arrive. The news says the election will proceed — in the towns not yet underwater."],
+  ["May 9, 2028","The election did happen. You were no longer there. THE COUNTRY SANK — it never even reached your ballot."]]},
+ blank:{tl:[["2028","Hindi ka bumoto para sa pangulo. Marami kayo. 'Yun ang naging desisyon."],
+  ["2029","Nanalo ang kandidatong may pinakamaraming sobre. Ang lamang: mas maliit kaysa sa bilang ng mga blankong balota."],
+  ["2034","May pumila sa init para ibenta ang boto nila. Ikaw, pumila para itapon ang sa'yo. LUMUBOG — dahan-dahan, habang nakatingin ka."]],
+  en:[["2028","You didn't vote for president. There were many of you. That WAS the decision."],
+  ["2029","The candidate with the most envelopes won. The margin: smaller than the number of blank ballots."],
+  ["2034","Some lined up in the heat to sell their votes. You lined up to throw yours away. THE COUNTRY SANK — slowly, while you watched."]]}
+};
+
+const UI = {
+  chapter:{tl:"Kabanata",en:"Chapter"}, water:{tl:"Baha",en:"Floodwater"},
+  sank:{tl:"🌊 LUMUBOG",en:"🌊 THE COUNTRY SANK"}, swam:{tl:"🏊 LUMANGOY",en:"🏊 THE COUNTRY SWAM"},
+  early:{tl:"🌊 LUMUBOG BAGO PA ANG HALALAN",en:"🌊 SANK BEFORE THE ELECTION"},
+  awake:{tl:"BUMOTO AKO NANG GISING 🇵🇭",en:"I VOTED WIDE AWAKE 🇵🇭"},
+  asleep:{tl:"BUMOTO AKO NANG NAKAPIKIT 🇵🇭",en:"I VOTED WITH EYES CLOSED 🇵🇭"},
+  challenge:{tl:"Kaya mo bang lumangoy? Subukan mo.",en:"Can you swim? Try it yourself."},
+  again:{tl:"Ulitin — Ibang Pilipinas Naman",en:"Play Again — A Different Philippines"},
+  receipts:{tl:"ANG MGA RESIBO — dokumentado lahat",en:"THE RECEIPTS — all documented"},
+  noname:{tl:"*Walang totoong pangalan sa larong ito. Ang mga taktika lang ang totoo.",en:"*No real names appear in this game. Only the tactics are real."},
+  grades:{tl:["BUDOL-BUDOL","INAANTOK","MEDYO GISING","GISING NA GISING"],en:["FULLY BUDOL-ED","DROWSY","HALF AWAKE","WIDE AWAKE"]}
+};
+
+function hud(){
+  return `<header><h1>SAGIP PILIPINAS 2028</h1><div class="sub">Sink or Swim</div>
+  <button id="langbtn">${LANG==="tl"?"EN":"TL"}</button></header>
+  <div id="hud"><span>${T(UI.chapter)} <b>${Math.min(G.i+1,V.length)}/${V.length}</b></span>
+  <span>${T(UI.water)}: <b>${G.water}%</b> <span id="gauge">· ${T(floodLabel())}</span></span></div>
+  <div id="ticker">${T(TICKER[G.i % TICKER.length])}</div>`;
+}
+function bindLang(rerender){ const b=document.getElementById("langbtn"); if(b) b.onclick=()=>{ LANG=(LANG==="tl")?"en":"tl"; rerender(); }; }
+
+function show(){
+  const v=V[G.i];
+  if(!v){ finale(); return; }
+  const btns=v.ch.map((c,idx)=>`<button data-i="${idx}">${T(c[0])}</button>`).join("");
+  app.innerHTML=hud()+`<div id="stage"><div class="card">
+    <div class="tag">${T(v.tag)}</div><p>${T(v.body)}</p>${v.quote?`<div class="quote">${T(v.quote)}</div>`:""}
+    <div class="choices">${btns}</div></div></div>`;
+  bindLang(show);
+  document.querySelectorAll(".choices button").forEach(b=>{ b.onclick=()=>pick(v, v.ch[+b.dataset.i][1]); });
+}
+
+function pick(v,fx){
+  if(fx.vote){ G.vote=fx.vote; G.i++; finale(false); return; }
+  if(v.dim){ G.dims[v.dim][0]+=fx.p||0; G.dims[v.dim][1]+=2; }
+  if(fx.w) G.water=Math.max(5,Math.min(100,G.water+fx.w));
+  if(fx.rec) G.seen.add(fx.rec);
+  G.i++;
+  if(G.water>=100){ finale(true); return; }   /* drowned before election day */
+  draw(); show();
+}
+
+function dimBars(){
+  let h="";
+  for(const k of ["aware","conscience","intel","character"]){
+    const [got,max]=G.dims[k]; const pct=max?Math.round(100*got/max):0;
+    h+=`<div class="dim"><div class="lbl"><span>${T(DIMLBL[k])}</span><span>${pct}%</span></div>
+        <div class="bar"><i style="width:${pct}%"></i></div></div>`;
+  }
+  return `<div id="dims">${h}</div>`;
+}
+
+function finale(early){
+  if(early!==undefined) G.early = early;
+  const isE = !!G.early;
+  if(!G.done){
+    if(isE){ G.water=100; }
+    else{
+      if(G.vote==="A") G.water=Math.min(100,G.water+22);
+      if(G.vote==="B") G.water=Math.max(6,G.water-22);
+      if(G.vote==="X") G.water=Math.min(100,G.water+12);
+    }
+    G.done = true;
+  }
+  draw();
+  const sank = isE ? true : (G.vote==="X" ? true : G.water>=50);
+  const track = (isE?FUT.early:(G.vote==="X"?FUT.blank:(sank?FUT.sink:FUT.swim)))[LANG];
+  let got=0,max=0; Object.values(G.dims).forEach(d=>{got+=d[0];max+=d[1];});
+  const pct = max?Math.round(100*got/max):0;
+  const grade = T(UI.grades)[ pct>=80?3 : pct>=55?2 : pct>=30?1 : 0 ];
+  const heads = track.map(h=>`<div><b>${h[0]}</b> — ${h[1]}</div>`).join("");
+  let li=""; G.seen.forEach(k=>{ const r=RECEIPTS[k][LANG]; li+=`<li><b>${r[0]}.</b> ${r[1]}</li>`; });
+  app.innerHTML=hud()+`<div class="screen">
+    <h2>${isE?T(UI.early):(sank?T(UI.sank):T(UI.swam))}</h2>
+    <div id="headlines">${heads}</div>
+    ${dimBars()}
+    <div class="sharecard">
+      <div class="big">${pct>=55?T(UI.awake):T(UI.asleep)}</div>
+      <div class="pct">${pct}%</div>
+      <div style="font-size:.85rem;font-weight:700;">${grade}</div>
+      <div style="font-size:.78rem;color:#5c718a;margin-top:6px;">${T(UI.challenge)}</div>
+    </div>
+    <p class="fine" style="margin-top:10px;">${T(UI.noname)}</p>
+    <div id="receipts"><h3 class="fine" style="letter-spacing:.16em;margin-bottom:6px;">${T(UI.receipts)}</h3><ul>${li}</ul></div>
+    <button class="btn" onclick="location.reload()">${T(UI.again)}</button>
+  </div>`;
+  bindLang(finale);
+}
+
+function title(){
+  app.innerHTML=`<div class="screen">
+    <h2 style="font-size:1.9rem;">SAGIP PILIPINAS<br>2028</h2>
+    <p class="fine" style="letter-spacing:.28em;text-transform:uppercase;">Sink or Swim</p>
+    <p style="margin-top:14px;">${LANG==="tl"?"Isang boto ka lang. Kaya nga nila pinag-aagawan.":"You are just one vote. That's exactly why they're all fighting for it."}</p>
+    <p class="fine">${LANG==="tl"?"Walang totoong pangalan dito. Ang mga taktika lang ang totoo — lahat dokumentado, lahat may resibo sa dulo. Susukatin ng laro ang apat: Kamalayan, Konsensya, Katalinuhan, Pagkatao.":"No real names appear here. Only the tactics are real — all documented, all receipted at the end. The game measures four things: Awareness, Conscience, Critical Thinking, Character."}</p>
+    <p class="fine">${LANG==="tl"?"Ninakaw na nila ang pondo ng flood control — ₱118 bilyon kada taon. Kaya ngayon, tumataas ang baha sa bawat pagkakataong nauto ka. Ang huling harang sa baha: ang boto mo. Sa Mayo 9, lumangoy o lumubog.":"They already stole the flood-control funds — ₱118 billion a year. So now the floodwater rises every time you get played. The last flood barrier left is your vote. On May 9: sink or swim."}</p>
+    <button class="btn" onclick="startGame()">${LANG==="tl"?"Gisingin Mo Ako":"Wake Me Up"}</button>
+    <div><button class="btn alt" id="titlelang">${LANG==="tl"?"Play in English":"Maglaro sa Tagalog"}</button></div>
+    <p class="fine" style="margin-top:12px;">Prototype v0.3 · ${LANG==="tl"?"kapatid ng":"sister game of"} CHURCH, INC.</p>
+  </div>`;
+  document.getElementById("titlelang").onclick=()=>{ LANG=(LANG==="tl")?"en":"tl"; title(); };
+}
+window.startGame=function(){ G.i=0; draw(); show(); };
+draw(14); title();
+</script>
+</body>
+</html>
